@@ -281,7 +281,8 @@
         var t = cards[k].getBoundingClientRect().top, p = (r.top + h - t) / h;
         depth += Math.max(0, Math.min(1, p));
       }
-      if (!reduce) { c.style.transform = depth ? 'scale(' + (1 - Math.min(depth, 3) * .045).toFixed(4) + ')' : ''; c.style.filter = depth ? 'brightness(' + (1 - Math.min(depth, 2) * .22).toFixed(3) + ')' : ''; }
+      // no shrinking: cards keep the same width so their edges line up; the ones underneath only dim
+      if (!reduce) { c.style.transform = ''; c.style.filter = depth ? 'brightness(' + (1 - Math.min(depth, 2) * .2).toFixed(3) + ')' : ''; }
       if (r.top <= stickTop(c) + h * .5) act = i;
     });
     if (act !== sActive) { sActive = act; sb.forEach(function (b, k) { b.classList.toggle('on', k === act); }); }
