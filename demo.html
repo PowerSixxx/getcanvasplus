@@ -150,9 +150,86 @@
   .p-pal.on { border-color: var(--p-acc); box-shadow: 0 0 0 1px var(--p-acc) inset; }
   .p-pal i { width: 9px; height: 9px; border-radius: 50%; }
 
+  /* ===== Liquid glass, like the Canvas+ panel since 1.3 ===== */
+  .demo { --g-ctl: rgba(255,255,255,.55); --g-on: rgba(255,255,255,.94); --g-track: rgba(118,118,128,.12); --g-rim: rgba(255,255,255,.95); --g-hair: rgba(0,0,0,.1); --g-low: rgba(0,0,0,.05);
+    --p-bg2: rgba(118,118,128,.1); --p-line: rgba(60,60,67,.11);
+    border-radius: 26px; background: rgba(248,249,252,.9); -webkit-backdrop-filter: blur(30px) saturate(1.8); backdrop-filter: blur(30px) saturate(1.8);
+    box-shadow: 0 40px 100px -20px var(--sh), 0 0 0 .5px var(--g-hair), inset 0 1px .5px rgba(255,255,255,.9), inset 0 0 22px rgba(255,255,255,.2); }
+  .demo.dark { --g-ctl: rgba(255,255,255,.08); --g-on: rgba(255,255,255,.2); --g-track: rgba(255,255,255,.07); --g-rim: rgba(255,255,255,.28); --g-hair: rgba(0,0,0,.45); --g-low: rgba(0,0,0,.25);
+    --p-bg2: rgba(255,255,255,.07); --p-line: rgba(255,255,255,.08); background: rgba(30,32,38,.9);
+    box-shadow: 0 40px 100px -20px var(--sh), 0 0 0 .5px rgba(255,255,255,.12), inset 0 1px .5px rgba(255,255,255,.12), inset 0 0 22px rgba(255,255,255,.04); }
+  .p-head { background: transparent; border-bottom: .5px solid var(--p-line); padding: 12px 12px 9px; }
+  .p-search { border: 0; border-radius: 999px; background: var(--g-ctl); padding: 7px 8px 7px 12px;
+    box-shadow: inset 0 1px .5px var(--g-rim), inset 0 -1px 1px var(--g-low), 0 0 0 .5px var(--g-hair), 0 2px 8px rgba(0,0,0,.06); }
+  .p-kbd i { border: 0; border-radius: 999px; padding: 3px 5px; background: var(--g-track); }
+  .p-x { width: 28px; height: 28px; border-radius: 999px; display: grid; place-items: center; padding: 0; font-size: 17px; background: var(--g-ctl);
+    box-shadow: inset 0 1px .5px var(--g-rim), inset 0 -1px 1px var(--g-low), 0 0 0 .5px var(--g-hair), 0 2px 8px rgba(0,0,0,.06); }
+  .p-tabs, .p-seg { background: var(--g-track); border-radius: 999px; padding: 3px; gap: 2px; box-shadow: inset 0 1px 2px var(--g-low); touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+  .p-tabs { margin-top: 10px; }
+  .p-seg { position: relative; }
+  .p-ind { top: 3px; bottom: 3px; border-radius: 999px; background: var(--g-on);
+    box-shadow: inset 0 1px .5px var(--g-rim), inset 0 -1px 1px var(--g-low), 0 0 0 .5px var(--g-hair), 0 3px 10px rgba(0,0,0,.1);
+    transition: transform .3s var(--ease), width .3s var(--ease), scale .3s var(--ease), background .35s; }
+  .p-tab, .p-seg button { position: relative; z-index: 1; border-radius: 999px; transition: scale .18s var(--ease), color .18s; }
+  .p-seg button.on { background: var(--g-on); box-shadow: inset 0 1px .5px var(--g-rim), 0 0 0 .5px var(--g-hair), 0 2px 6px rgba(0,0,0,.09); }
+  /* only the current option is red (the AI tab no longer is, unless it's open) */
+  .p-tab.ai { color: var(--p-muted) !important; }
+  .p-tab.on, .p-tab.ai.on, .p-seg button.on { color: var(--p-acc) !important; }
+  /* the drag lens: press and slide, the pill lifts into clear glass and follows the pointer */
+  .p-lens { position: absolute; left: 0; z-index: 2; pointer-events: none; border-radius: 999px; background: var(--g-on);
+    box-shadow: inset 0 1px .5px var(--g-rim), 0 0 0 .5px var(--g-hair), 0 2px 6px rgba(0,0,0,.09); }
+  .p-lens.landing:not(.lift) { z-index: 0; }
+  .p-seg.landing button.on, .p-seg.dragging button.on { background: transparent; box-shadow: none; }
+  .p-ind.lift, .p-lens.lift { z-index: 2; background: rgba(255,255,255,.16) !important;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.9), inset 0 1.5px 5px rgba(255,255,255,.65), inset 0 -2px 6px rgba(0,0,0,.05), 0 8px 22px rgba(0,0,0,.14), 0 1px 4px rgba(0,0,0,.08) !important; }
+  .p-ind.lift { scale: 1.12 1.32; }
+  .p-lens.lift { scale: 1.1 1.28; }
+  .demo.dark .p-ind.lift, .demo.dark .p-lens.lift { background: rgba(255,255,255,.08) !important;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.35), inset 0 1.5px 5px rgba(255,255,255,.14), 0 8px 22px rgba(0,0,0,.45) !important; }
+  .p-ind.landing { transition: transform .45s cubic-bezier(.34,1.45,.64,1), width .45s cubic-bezier(.34,1.45,.64,1), scale .4s cubic-bezier(.34,1.56,.64,1), background .2s; }
+  .dragging, .dragging button { cursor: grabbing !important; }
+  .p-tabs.dragging .p-tab, .p-seg.dragging button { color: var(--p-muted) !important; transition: none !important; }
+  .p-tabs.dragging .lc.in, .p-seg.dragging .lc.in, .p-tabs.dragging svg.in { color: var(--p-acc) !important; }
+  .lw { display: inline; }
+  /* round glass buttons */
+  .p-ib span { border: 0; border-radius: 999px; background: var(--g-ctl);
+    box-shadow: inset 0 1px .5px var(--g-rim), inset 0 -1px 1px var(--g-low), 0 0 0 .5px var(--g-hair), 0 2px 8px rgba(0,0,0,.06); }
+  .p-back { margin-bottom: 10px; }
+  .p-back a { width: 32px; height: 32px; border-radius: 999px; justify-content: center; gap: 0; color: var(--p-acc);
+    background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(244,244,248,.92));
+    box-shadow: inset 0 1px .5px #fff, inset 0 -1px 1px rgba(0,0,0,.04), 0 0 0 .5px rgba(0,0,0,.14), 0 2px 8px rgba(0,0,0,.07); transition: scale .2s cubic-bezier(.34,1.56,.64,1); }
+  .p-back a:active { scale: .92; }
+  .p-back a svg { width: 18px; height: 18px; margin-left: -1px; }
+  .demo.dark .p-back a { background: linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.07));
+    box-shadow: inset 0 1px .5px rgba(255,255,255,.22), inset 0 -1px 1px rgba(0,0,0,.2), 0 0 0 .5px rgba(255,255,255,.12), 0 2px 8px rgba(0,0,0,.3); }
+  .p-sw { background: rgba(120,120,128,.24); }
+  .p-sw.on { background: #34c759; }
+  .p-card, .p-group { border: 0; background: var(--p-bg2); }
+  .p-step, .p-cs, .p-tile { background: var(--p-bg2); }
+  .p-need { background: rgba(250,250,252,.9); border-top: .5px solid var(--p-line); }
+  .demo.dark .p-need { background: rgba(34,36,42,.94); }
+  .p-it { border-bottom: .5px solid var(--p-line); }
+  /* calendar view (List / Calendar switch) */
+  .p-calg { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-top: 10px; }
+  .p-calg b { font-size: 10.5px; color: var(--p-muted); text-align: center; font-weight: 700; }
+  .p-cd2 { position: relative; height: 44px; border-radius: 10px; background: var(--p-bg2); font-size: 11px; font-weight: 700; padding: 4px 5px; color: var(--p-fg); }
+  .p-cd2.today { box-shadow: inset 0 0 0 1.5px var(--p-acc); color: var(--p-acc); }
+  .p-cd2 i { position: absolute; left: 5px; right: 5px; bottom: 5px; height: 4px; border-radius: 99px; }
+  /* current option: see-through glass capsule with a fine highlight around the edge */
+  .demo { --pill: linear-gradient(180deg, rgba(255,255,255,.6), rgba(255,255,255,.24));
+    --pill-shadow: inset 0 1px 0 rgba(255,255,255,.95), inset 0 -1px 0 rgba(255,255,255,.3), 0 0 0 .5px rgba(0,0,0,.07), 0 1px 2px rgba(0,0,0,.05), 0 3px 10px rgba(0,0,0,.07);
+    --pill-rim: linear-gradient(160deg, rgba(255,255,255,1), rgba(255,255,255,.25) 35%, rgba(255,255,255,.08) 60%, rgba(255,255,255,.75)); }
+  .demo.dark { --pill: linear-gradient(180deg, rgba(255,255,255,.2), rgba(255,255,255,.08));
+    --pill-shadow: inset 0 1px 0 rgba(255,255,255,.3), inset 0 -1px 0 rgba(255,255,255,.06), 0 0 0 .5px rgba(0,0,0,.45), 0 3px 10px rgba(0,0,0,.28);
+    --pill-rim: linear-gradient(160deg, rgba(255,255,255,.55), rgba(255,255,255,.1) 35%, rgba(255,255,255,.03) 60%, rgba(255,255,255,.3)); }
+  .p-ind, .p-seg button.on, .p-lens { background: var(--pill); box-shadow: var(--pill-shadow); }
+  .p-ind::after, .p-seg button.on::after, .p-lens::after { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none; background: var(--pill-rim);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); }
+  .p-seg.landing button.on::after, .p-seg.dragging button.on::after { display: none; }
+  @media (prefers-reduced-motion: reduce) { .p-ind.lift, .p-lens.lift { scale: 1; } .p-ind.landing { transition: none; } }
   /* Fits a card on another page */
-  .demo { box-shadow: 0 0 0 1px rgba(0,0,0,.08); }
-  .demo.dark { box-shadow: 0 0 0 1px rgba(255,255,255,.1); }
+  .demo { box-shadow: 0 0 0 .5px rgba(0,0,0,.12), inset 0 1px .5px rgba(255,255,255,.9); }
+  .demo.dark { box-shadow: 0 0 0 .5px rgba(255,255,255,.12), inset 0 1px .5px rgba(255,255,255,.12); }
   .p-body { height: 410px; }
   .coach { display: none; }
 </style>
@@ -160,6 +237,6 @@
 <body>
 <div class="demo" id="dm" role="group" aria-label="Canvas+ demo"></div>
 <script>window.CP_EMBED = true;</script>
-<script src="site.js?v=563581f7"></script>
+<script src="site.js?v=05145e10"></script>
 </body>
 </html>

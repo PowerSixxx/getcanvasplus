@@ -58,7 +58,7 @@
     { t: 'Project proposal', c: 'CSE 3521', k: ['Assignment', '作业'], p: 20, h: 215.6 },
     { t: 'Problem Set 5', c: 'STAT 3470', k: ['Assignment', '作业'], p: 40, h: 290 }
   ];
-  var done = {}, days = 14, showDone = false;
+  var done = {}, days = 14, showDone = false, view = 'list';
   function left(ms) {
     var over = ms < 0, s = Math.abs(ms) / 1000, d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60);
     var v = d ? (zh() ? d + ' 天 ' + h + ' 小时' : d + 'd ' + h + 'h') : (zh() ? h + ' 小时 ' + m + ' 分' : h + 'h ' + m + 'm');
@@ -81,11 +81,20 @@
         '<div class="p-rt"><span class="p-cd ' + cls + '">' + left(ms) + '</span><span class="p-dt">' + when(start + x.h * 3600e3) + '</span>' +
         '<span class="p-acts"><button class="p-aig" data-act="ai">' + ic('spark') + L('AI guide', 'AI 拆解') + '</button><span class="p-mail">' + ic('mail') + '</span></span></div></div>';
     }).join('');
-    return '<div class="p-seg"><button class="on">' + L('List', '列表') + '</button><button>' + L('Calendar', '日历') + '</button></div>' +
+    var cal = '';
+    if (view === 'cal') {
+      var t0 = new Date(start); t0.setHours(0, 0, 0, 0); var first = new Date(t0.getTime() - t0.getDay() * 864e5);
+      cal = '<div class="p-calg">' + (zh() ? '日一二三四五六' : 'SMTWTFS').split('').map(function (d) { return '<b>' + d + '</b>'; }).join('') +
+        Array.from({ length: 28 }, function (_, k) {
+          var day = new Date(first.getTime() + k * 864e5), hit = DL.filter(function (x) { var due = new Date(start + x.h * 3600e3); return due.toDateString() === day.toDateString(); })[0];
+          return '<span class="p-cd2' + (day.toDateString() === t0.toDateString() ? ' today' : '') + '">' + day.getDate() + (hit ? '<i style="background:' + col(hit.c) + '"></i>' : '') + '</span>';
+        }).join('') + '</div>';
+    }
+    return '<div class="p-seg"><button data-act="view" data-v="list" class="' + (view === 'list' ? 'on' : '') + '">' + L('List', '列表') + '</button><button data-act="view" data-v="cal" class="' + (view === 'cal' ? 'on' : '') + '">' + L('Calendar', '日历') + '</button></div>' +
       '<div class="p-filters"><div class="p-seg">' + [7, 14, 30].map(function (d) { return '<button data-act="days" data-d="' + d + '" class="' + (d === days ? 'on' : '') + '">' + d + L('d', ' 天') + '</button>'; }).join('') + '</div>' +
       '<span class="p-tog" data-act="showdone"><button class="p-sw' + (showDone ? ' on' : '') + '" aria-label="show done"></button>' + L('Show done', '显示已完成') + '</span>' +
       '<span class="p-ib"><span>' + ic('cal') + '</span><span>' + ic('bell') + '</span><span>' + ic('refresh') + '</span></span></div>' +
-      '<div class="p-list">' + rows + '</div>';
+      (view === 'cal' ? cal : '<div class="p-list">' + rows + '</div>');
   }
 
   // ---- Final calc: grade, class standing, what you need on the final ----
@@ -145,7 +154,7 @@
   var aiShown = 0, aiTimer = null;
   function paneAI() {
     var g = G[zh() ? 'zh' : 'en'];
-    return '<div class="p-back"><a data-act="back">' + ic('back', 2.4) + L('Back', '返回') + '</a><span class="p-badge">' + ic('spark') + L('Canvas+ AI guide', 'Canvas+ AI 拆解') + '</span></div>' +
+    return '<div class="p-back"><a data-act="back" aria-label="' + L('Back', '返回') + '" title="' + L('Back', '返回') + '">' + ic('back', 2.6) + '</a><span class="p-badge">' + ic('spark') + L('Canvas+ AI guide', 'Canvas+ AI 拆解') + '</span></div>' +
       '<p class="p-h">Lab 2: Shell implementation</p><div class="p-st-sub">CSE 2431 · ' + L('due in 5 h · 10% of your grade', '5 小时后截止 · 占总成绩 10%') + '</div>' +
       '<div class="p-tldr">' + g.tldr + '</div>' +
       '<div class="p-st-sub">' + L('Estimated time: ', '预计用时：') + '<b style="color:var(--p-fg)">' + g.time + '</b></div>' +
@@ -156,7 +165,7 @@
       '<div class="p-fine">' + L('Explains the steps — never writes the answer for you.', '只讲思路和步骤，不替你写答案。') + '</div>';
   }
   function runAI() {
-    clearTimeout(aiTimer); aiShown = 0; draw();
+    clearTimeout(aiTimer); aiShown = 0; redrawPane(2);   // only the AI pane: a full redraw would cut the tab pill's spring short
     (function next() { if (aiShown >= 5) return; aiShown++; var s = $$('.p-step', dm)[aiShown - 1]; if (s) s.classList.add('in'); aiTimer = setTimeout(next, reduce ? 0 : 600); })();
   }
 
@@ -193,11 +202,17 @@
     ind.style.width = b.offsetWidth + 'px'; ind.style.transform = 'translateX(' + b.offsetLeft + 'px)';
     if (instant) { ind.offsetWidth; ind.style.transition = ''; }
   }
-  function show(i) {
+  // Switching tabs: the pill lifts for a moment and springs onto the new tab (like the extension since 1.3).
+  function show(i, fromDrag) {
     var prev = cur; cur = i;
-    var b = $$('.p-tab', dm), p = $$('.p-pane', dm);
+    var b = $$('.p-tab', dm), p = $$('.p-pane', dm), ind = $('.p-ind', dm);
     b.forEach(function (x, k) { x.classList.toggle('on', k === i); }); p.forEach(function (x, k) { x.classList.toggle('on', k === i); });
-    placeInd();
+    if (ind && !reduce && (prev !== i || fromDrag)) {
+      ind.style.transition = ''; ind.classList.add('lift', 'landing'); ind.offsetWidth;
+      placeInd();
+      setTimeout(function () { ind.classList.remove('lift'); }, fromDrag ? 16 : 150);   // a tap: lifted for a moment, then lands with a bounce
+      clearTimeout(ind._lt); ind._lt = setTimeout(function () { ind.classList.remove('landing'); }, 600);
+    } else placeInd();
     if (i === 2 && prev !== 2) runAI();
   }
   // Only the panes that change are redrawn (keeps the sliding tab and fades smooth).
@@ -209,6 +224,7 @@
     var a = t.dataset.act;
     if (a === 'ck') { done[t.dataset.i] = !done[t.dataset.i]; redrawPane(0); }
     else if (a === 'days') { days = +t.dataset.d; redrawPane(0); }
+    else if (a === 'view') { view = t.dataset.v; redrawPane(0); }
     else if (a === 'showdone') { showDone = !showDone; redrawPane(0); }
     else if (a === 'ai') show(2);
     else if (a === 'back') show(0);
@@ -219,8 +235,119 @@
     else if (a === 'pal') { pal = +t.dataset.k; redrawPane(3); redrawPane(0); redrawPane(1); }
   });
   dm.addEventListener('pointerdown', function () { touched = true; });
+
+  // ---- press and drag the tab bar or a switcher: a clear glass lens follows the pointer ----
+  // Characters under the lens are red, the rest grey; let go and it springs onto the nearest option.
+  var drag = null, landUntil = 0;
+  function chars(el) {
+    if (el._ch) return el._ch;
+    var out = [];
+    (function walk(n) {
+      [].slice.call(n.childNodes).forEach(function (c) {
+        if (c.nodeType === 3) {
+          if (!c.nodeValue.trim()) return;
+          var w = document.createElement('span'); w.className = 'lw';
+          Array.from(c.nodeValue).forEach(function (ch) {
+            if (/\s/.test(ch)) { w.appendChild(document.createTextNode(ch)); return; }
+            var sp = document.createElement('span'); sp.className = 'lc'; sp.textContent = ch; w.appendChild(sp); out.push(sp);
+          });
+          c.parentNode.replaceChild(w, c);
+        } else if (c.nodeType === 1 && c.tagName.toLowerCase() !== 'svg' && !c.classList.contains('rd')) walk(c);
+      });
+    })(el);
+    el._ch = out; el._ic = [].slice.call(el.querySelectorAll('svg'));
+    return out;
+  }
+  function paint(lens, items) {
+    var r = lens.getBoundingClientRect();
+    var inside = function (n) { var b = n.getBoundingClientRect(), m = b.left + b.width / 2; return m >= r.left && m <= r.right; };
+    items.forEach(function (el) {
+      chars(el).forEach(function (c) { c.classList.toggle('in', inside(c)); });
+      el._ic.forEach(function (s) { s.classList.toggle('in', inside(s)); });
+    });
+  }
+  // A switcher option springs from where the pill was to the new one (the pane is redrawn, so a lens is drawn on top).
+  function landSeg(act, val, from) {
+    if (reduce) return;
+    var btn = dm.querySelector('[data-act="' + act + '"][data-' + (act === 'days' ? 'd' : 'v') + '="' + val + '"]'); if (!btn) return;
+    var bar = btn.parentNode, lens = document.createElement('span');
+    lens.className = 'p-lens landing';
+    lens.style.cssText = 'top:' + btn.offsetTop + 'px;height:' + btn.offsetHeight + 'px;width:' + btn.offsetWidth + 'px;transform:translateX(' + btn.offsetLeft + 'px)';
+    bar.appendChild(lens); bar.classList.add('landing');
+    landUntil = Date.now() + 560;
+    var end = function () { lens.remove(); bar.classList.remove('landing'); };
+    try {
+      lens.animate([{ transform: 'translateX(' + from.x + 'px)', width: from.w + 'px', scale: '1.1 1.28' }, { transform: 'translateX(' + btn.offsetLeft + 'px)', width: btn.offsetWidth + 'px', scale: '1' }],
+        { duration: 520, easing: 'cubic-bezier(.34,1.45,.64,1)' }).onfinish = end;
+    } catch (e) { end(); }
+  }
+  dm.addEventListener('pointerdown', function (e) {
+    if (e.button !== 0 || drag) return;
+    var bar = e.target.closest('.p-tabs, .p-seg'); if (!bar) return;
+    var isTabs = bar.classList.contains('p-tabs');
+    var items = $$(isTabs ? '.p-tab' : 'button', bar);
+    if (!isTabs && !items.every(function (b) { return b.dataset.act; })) return;
+    var on = items.filter(function (b) { return b.classList.contains('on'); })[0]; if (!on) return;
+    var bx = bar.getBoundingClientRect().left + bar.clientLeft, px = e.clientX - bx, ox = on.offsetLeft, w = on.offsetWidth;
+    var d = drag = { active: false, x: ox, grab: px >= ox && px <= ox + w ? px - ox : w / 2, best: null, pressed: e.target.closest('button') };
+    var move = function (ev) {
+      if (drag !== d) return;
+      if (!d.active) {
+        if (Math.abs(ev.clientX - e.clientX) < 5) return;
+        d.active = true;
+        try { bar.setPointerCapture(e.pointerId); } catch (er) {}
+        bar.classList.add('dragging');
+        if (isTabs) { d.lens = $('.p-ind', dm); d.lens.classList.remove('landing'); }
+        else {
+          d.lens = document.createElement('span'); d.lens.className = 'p-lens';
+          d.lens.style.cssText = 'top:' + on.offsetTop + 'px;height:' + on.offsetHeight + 'px;width:' + w + 'px;transform:translateX(' + ox + 'px)';
+          bar.appendChild(d.lens);
+        }
+        d.lens.style.transition = 'scale .32s cubic-bezier(.34,1.56,.64,1), background .2s';
+        d.lens.offsetWidth; d.lens.classList.add('lift');
+      }
+      ev.preventDefault();
+      var a = items[0], z = items[items.length - 1], min = a.offsetLeft, max = z.offsetLeft + z.offsetWidth - w;
+      var x = ev.clientX - bx - d.grab;
+      if (x < min) x = min - Math.sqrt(min - x) * 2; else if (x > max) x = max + Math.sqrt(x - max) * 2;
+      d.x = x; d.lens.style.transform = 'translateX(' + x + 'px)'; d.lens.style.width = w + 'px';
+      var c = x + w / 2, bd = 1e9;
+      items.forEach(function (b) {
+        var dist = Math.abs(b.offsetLeft + b.offsetWidth / 2 - c), k = Math.max(0, 1 - dist / (b.offsetWidth * .9));
+        b.style.scale = String(1 + (isTabs ? .1 : .08) * k);
+        if (dist < bd) { bd = dist; d.best = b; }
+      });
+      paint(d.lens, items);
+    };
+    var up = function () {
+      bar.removeEventListener('pointermove', move); bar.removeEventListener('pointerup', up); bar.removeEventListener('pointercancel', up); bar.removeEventListener('lostpointercapture', up);
+      if (drag !== d) return;
+      drag = null;
+      if (!d.active) {                       // a plain click on another option: it springs over after the click
+        var p = d.pressed;
+        if (!isTabs && p && p !== on && items.indexOf(p) >= 0) setTimeout(function () { landSeg(p.dataset.act, p.dataset.d || p.dataset.v, { x: ox, w: w }); }, 0);
+        return;
+      }
+      bar.classList.remove('dragging');
+      items.forEach(function (b) { b.style.scale = ''; (b._ch || []).forEach(function (c) { c.classList.remove('in'); }); (b._ic || []).forEach(function (s) { s.classList.remove('in'); }); });
+      var eat = function (ev) { ev.stopPropagation(); ev.preventDefault(); };
+      bar.addEventListener('click', eat, true);
+      var target = d.best || on;
+      setTimeout(function () {
+        bar.removeEventListener('click', eat, true);
+        if (isTabs) { touched = true; show(items.indexOf(target), true); }
+        else {
+          d.lens.remove();
+          var act = target.dataset.act, val = target.dataset.d || target.dataset.v;
+          if (target !== on) target.click(); else redrawPane(0);
+          landSeg(act, val, { x: d.x, w: w });
+        }
+      }, 0);
+    };
+    bar.addEventListener('pointermove', move); bar.addEventListener('pointerup', up); bar.addEventListener('pointercancel', up); bar.addEventListener('lostpointercapture', up);
+  });
   if ('ResizeObserver' in window) new ResizeObserver(function () { placeInd(true); }).observe(dm);
-  setInterval(function () { if (cur === 0) redrawPane(0); }, 1000);
+  setInterval(function () { if (cur === 0 && !drag && Date.now() > landUntil) redrawPane(0); }, 1000);
   if (!reduce) setInterval(function () { if (!touched && document.visibilityState === 'visible') show((cur + 1) % 4); }, 5600);
 
   // Notification toasts
