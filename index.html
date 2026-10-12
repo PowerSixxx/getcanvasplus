@@ -622,38 +622,24 @@
 </style>
 </head>
 <body>
-<!-- Opening animation: the C+ mark draws itself, fills, the wordmark writes in, then the logo flies into the nav while the page opens around it. Once per session; skipped on any input or with reduced motion. -->
+<!-- Opening animation: the nav's own logo is lifted to the centre, draws itself, fills, the wordmark writes in, then it flies home and the page opens around it.
+     It is the real nav logo the whole time, so it lands exactly where it belongs. Once per session; skipped on any input or with reduced motion. -->
 <style>
-  #intro { position: fixed; inset: 0; z-index: 9999; pointer-events: auto; }
+  .brand .bmk { width: 30px; height: 30px; flex: none; overflow: visible; }
+  .brand .bdraw { display: none; }
+  .brand .bplus { transform-box: fill-box; transform-origin: 50% 50%; }
+  #intro { position: fixed; inset: 0; z-index: 10000; }
   #intro .ibg { position: absolute; inset: 0; background: var(--bg); }
   #intro .iglow { position: absolute; left: 50%; top: 50%; width: 560px; height: 560px; margin: -280px 0 0 -280px; border-radius: 50%;
     background: radial-gradient(closest-side, rgba(225,25,35,.42), rgba(225,25,35,0)); opacity: 0; filter: blur(10px); }
-  #intro .ilogo { position: absolute; left: 50%; top: 50%; display: flex; align-items: center; gap: 22px; transform-origin: 50% 50%; will-change: transform; }
-  #intro .im { width: 104px; height: 104px; flex: none; overflow: visible; transform-origin: 50% 50%; }
-  #intro .im .draw * { fill: none; stroke: #e3242b; stroke-width: 3.2; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
-  #intro .im .fill * { fill: #BB0000; }
-  #intro .im .plus { transform-box: fill-box; transform-origin: 50% 50%; }
-  #intro .iw { font: 800 76px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif; letter-spacing: -.03em; color: var(--fg); white-space: nowrap; display: inline-flex; transform-origin: 0 50%; }
-  #intro .iw i { font-style: normal; display: inline-block; opacity: 0; }
-  #intro .iw i.iplus { color: #e3242b; }
-  html.intro-on .nav .brand { opacity: 0; }
-  html.intro-on, html.intro-on body { overflow: hidden; }
+  .nav .brand { transform-origin: 0 0; }
+  html.intro-on .nav { z-index: 10001; }
+  html.intro-on .nav .brand .bdraw { display: inline; }
+  html.intro-on .nav .bdraw * { fill: none; stroke: #e3242b; stroke-width: 3.2; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
+  html.intro-on:not(.intro-nav) .nav .links, html.intro-on:not(.intro-nav) .nav .nav-r { opacity: 0; }
+  .nav .links, .nav .nav-r { transition: opacity .45s ease; }
 </style>
-<div id="intro" aria-hidden="true">
-  <div class="ibg"></div><div class="iglow"></div>
-  <div class="ilogo">
-    <svg class="im" viewBox="25 12.5 146 146">
-      <defs><linearGradient id="isw" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".75"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
-        <clipPath id="iclip"><path d="M95.5 36A4.5 4.5 0 0 1 100 40.5V55.5A4.5 4.5 0 0 1 95.5 60H61A9 9 0 0 0 52 69V120A9 9 0 0 0 61 129H116A9 9 0 0 0 125 120V104.5A4.5 4.5 0 0 1 129.5 100H144.5A4.5 4.5 0 0 1 149 104.5V123A30 30 0 0 1 119 153H58A30 30 0 0 1 28 123V66A30 30 0 0 1 58 36Z"/><rect x="107" y="36" width="61" height="24" rx="4.5"/><rect x="125" y="18" width="24" height="61" rx="4.5"/></clipPath></defs>
-      <g class="fill" opacity="0"><path d="M95.5 36A4.5 4.5 0 0 1 100 40.5V55.5A4.5 4.5 0 0 1 95.5 60H61A9 9 0 0 0 52 69V120A9 9 0 0 0 61 129H116A9 9 0 0 0 125 120V104.5A4.5 4.5 0 0 1 129.5 100H144.5A4.5 4.5 0 0 1 149 104.5V123A30 30 0 0 1 119 153H58A30 30 0 0 1 28 123V66A30 30 0 0 1 58 36Z"/>
-        <g class="plus"><rect x="107" y="36" width="61" height="24" rx="4.5"/><rect x="125" y="18" width="24" height="61" rx="4.5"/></g></g>
-      <g class="draw"><path pathLength="1" d="M95.5 36A4.5 4.5 0 0 1 100 40.5V55.5A4.5 4.5 0 0 1 95.5 60H61A9 9 0 0 0 52 69V120A9 9 0 0 0 61 129H116A9 9 0 0 0 125 120V104.5A4.5 4.5 0 0 1 129.5 100H144.5A4.5 4.5 0 0 1 149 104.5V123A30 30 0 0 1 119 153H58A30 30 0 0 1 28 123V66A30 30 0 0 1 58 36Z"/>
-        <rect pathLength="1" x="107" y="36" width="61" height="24" rx="4.5"/><rect pathLength="1" x="125" y="18" width="24" height="61" rx="4.5"/></g>
-      <rect class="sweep" clip-path="url(#iclip)" x="-60" y="0" width="70" height="180" fill="url(#isw)" opacity="0" transform="skewX(-18)"/>
-    </svg>
-    <span class="iw"><i>C</i><i>a</i><i>n</i><i>v</i><i>a</i><i>s</i><i class="iplus">+</i></span>
-  </div>
-</div>
+<div id="intro" aria-hidden="true"><div class="ibg"></div><div class="iglow"></div></div>
 <script>
 (function () {
   var el = document.getElementById('intro'), root = document.documentElement, q = new URLSearchParams(location.search);
@@ -662,60 +648,58 @@
   if (q.has('nointro') || reduce || (seen && !q.has('intro'))) { el.remove(); return; }
   try { sessionStorage.setItem('cp-intro', '1'); } catch (e) {}
   root.classList.add('intro-on');
-  var $ = function (s) { return el.querySelector(s); }, logo = $('.ilogo'), mark = $('.im'), word = $('.iw'), letters = [].slice.call(word.children);
-  var draws = [].slice.call(el.querySelectorAll('.draw *')), fill = $('.fill'), plus = $('.plus'), sweep = $('.sweep'), glow = $('.iglow'), bg = $('.ibg');
+  var bg = el.querySelector('.ibg'), glow = el.querySelector('.iglow');
+  var brand, mark, word, fill, plus, draw, draws, sweep, R0 = null;
+  function grab() {
+    brand = document.querySelector('.nav .brand'); if (!brand) return false;
+    mark = brand.querySelector('.bmk'); word = brand.querySelector('span'); fill = brand.querySelector('.bfill'); plus = brand.querySelector('.bplus');
+    draw = brand.querySelector('.bdraw'); draws = [].slice.call(draw.children); sweep = brand.querySelector('.bsweep');
+    return true;
+  }
   var clamp = function (v) { return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function (t, a, b) { return clamp((t - a) / (b - a)); };
   var outExpo = function (k) { return k >= 1 ? 1 : 1 - Math.pow(2, -10 * k); }, inOut = function (k) { return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
   var spring = function (k) { return k >= 1 ? 1 : 1 - Math.exp(-7 * k) * Math.cos(10 * k); };
-  var FLY = 1.62, LAND = 2.12, END = 2.72, t0 = performance.now(), skipAt = null, to = null, fit = 1;
-  // where the logo lands: the brand in the nav bar
-  function measure() {
-    var brand = document.querySelector('.nav .brand'); if (!brand) return null;
-    var img = brand.querySelector('img').getBoundingClientRect(), sp = brand.querySelector('span');
-    // the visible mark inside icon128.png spans x 8–120, y 10–118 of 128 px
-    var tx = img.left + img.width * 8 / 128, ty = img.top + img.height * 10 / 128, tw = img.width * 112 / 128;
-    var m = mark.getBoundingClientRect(), f = fill.getBoundingClientRect(), sc = tw / f.width;
-    var w = word.getBoundingClientRect(), sr = sp.getBoundingClientRect(), nf = parseFloat(getComputedStyle(sp).fontSize), wf = parseFloat(getComputedStyle(word).fontSize);
-    return { s: sc, dx: (tx - m.left - (f.left - m.left) * sc) / fit, dy: (ty - m.top - (f.top - m.top) * sc) / fit,
-      ws: nf / wf / fit, wdx: (sr.left - w.left) / fit, wdy: (sr.top + sr.height / 2 - (w.top + w.height / 2)) / fit };
-  }
-  function skip() { if (skipAt == null) { var t = (performance.now() - t0) / 1000; if (t < FLY - .05) { skipAt = t; } } }
+  var FLY = 1.62, LAND = 2.12, END = 2.72, t0 = performance.now(), skipAt = null;
+  function skip() { if (skipAt == null) { var t = (performance.now() - t0) / 1000; if (t < FLY - .05) skipAt = t; } }
   ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(function (e) { addEventListener(e, skip, { passive: true, once: true }); });
+  function done() {
+    root.classList.remove('intro-on', 'intro-nav');
+    if (brand) { brand.style.transform = ''; mark.style.filter = ''; draw.style.display = ''; word.style.webkitMaskImage = word.style.maskImage = word.style.filter = ''; fill.removeAttribute('opacity'); plus.style.transform = ''; sweep.setAttribute('opacity', '0'); }
+    el.remove();
+  }
   function frame() {
-    var now = performance.now(), t = (now - t0) / 1000;   // one clock for start and frames
-    if (skipAt != null) t = FLY - .05 + (t - skipAt);   // skipped: jump straight to the landing
+    if (!brand && !grab()) return requestAnimationFrame(frame);
+    var now = performance.now(), t = (now - t0) / 1000;
+    if (skipAt != null) t = FLY - .05 + (t - skipAt);
+    if (t >= END) return done();
+    // the logo's own place on the page (transform-free), and how big it is in the middle of the screen
+    brand.style.transform = 'none'; var r = brand.getBoundingClientRect();
+    var S = Math.min(3.4, (innerWidth - 40) / r.width), dx = innerWidth / 2 - S * r.width / 2 - r.left, dy = innerHeight / 2 - S * r.height / 2 - r.top;
+    var k = inOut(P(t, FLY, LAND)), sc = S + (1 - S) * k, pre = .94 + .06 * outExpo(P(t, 0, 1.2));
+    if (t < FLY) sc *= pre;
+    if (k >= 1) brand.style.transform = '';                // landed: no transform at all — the logo is simply where it lives
+    else brand.style.transform = 'translate(' + (dx * (1 - k) + (t < FLY ? (1 - pre) * S * r.width / 2 : 0)) + 'px,' + (dy * (1 - k) + (t < FLY ? (1 - pre) * S * r.height / 2 : 0)) + 'px) scale(' + sc + ')';
     // 1. the outline draws itself
-    var d = inOut(P(t, .06, .78));
     draws.forEach(function (p, i) { p.style.strokeDashoffset = 1 - inOut(P(t, .06 + i * .1, .7 + i * .08)); });
     glow.style.opacity = (.85 * outExpo(P(t, .1, .9)) * (1 - P(t, FLY, FLY + .3))).toFixed(3);
     glow.style.transform = 'scale(' + (.7 + .3 * outExpo(P(t, .1, 1.2))) + ')';
-    // 2. it fills, the plus pops
-    var f = outExpo(P(t, .62, 1.0));
-    fill.setAttribute('opacity', f.toFixed(3));
-    el.querySelector('.draw').setAttribute('opacity', (1 - P(t, .8, 1.05)).toFixed(3));
-    plus.style.transform = 'scale(' + (t < .62 ? .6 : .6 + .4 * spring(P(t, .62, 1.12))) + ')';
-    mark.style.filter = 'drop-shadow(0 0 ' + (18 * (1 - P(t, 1.1, FLY))).toFixed(1) + 'px rgba(230,30,40,.55))';
-    // light sweeps across the mark
+    // 2. it fills, the plus pops, a light sweeps across
+    var fo = outExpo(P(t, .62, 1.0)); if (fo >= 1) fill.removeAttribute('opacity'); else fill.setAttribute('opacity', fo.toFixed(3));
+    draw.setAttribute('opacity', (1 - P(t, .8, 1.05)).toFixed(3)); if (t > 1.05) draw.style.display = 'none';
+    plus.style.transform = t > 1.6 ? '' : 'scale(' + (t < .62 ? .6 : .6 + .4 * spring(P(t, .62, 1.12))) + ')';
+    var gl = 6 * (1 - P(t, 1.1, FLY)); mark.style.filter = gl > .01 ? 'drop-shadow(0 0 ' + gl.toFixed(2) + 'px rgba(230,30,40,.55))' : '';
     var sw = P(t, 1.05, 1.55); sweep.setAttribute('opacity', sw > 0 && sw < 1 ? '1' : '0'); sweep.setAttribute('x', (-60 + sw * 260).toFixed(1));
-    // 3. the wordmark writes in, letter by letter
-    letters.forEach(function (l, i) { var k = outExpo(P(t, .78 + i * .055, 1.28 + i * .055));
-      l.style.opacity = k.toFixed(3); l.style.transform = 'translateY(' + ((1 - k) * 18).toFixed(1) + 'px)'; l.style.filter = k < .999 ? 'blur(' + ((1 - k) * 8).toFixed(1) + 'px)' : 'none'; });
-    // centred group; 4. it flies into the nav while the page opens around it (iris)
-    fit = Math.min(1, (innerWidth - 40) / logo.offsetWidth);   // phones: the whole logo fits the screen
-    var base = 'translate(-50%,-50%) scale(' + fit + ')';
-    if (t < FLY) { logo.style.transform = 'translate(-50%,-50%) scale(' + fit * (.94 + .06 * outExpo(P(t, 0, 1.2))) + ')'; mark.style.transform = word.style.transform = ''; }
-    else {
-      if (!to) { logo.style.transform = base; to = measure(); }
-      var k = inOut(P(t, FLY, LAND));                  // the logo lands first…
-      if (to) {
-        mark.style.transform = 'translate(' + (to.dx * k) + 'px,' + (to.dy * k) + 'px) scale(' + (1 + (to.s - 1) * k) + ')'; mark.style.transformOrigin = '0 0';
-        word.style.transform = 'translate(' + (to.wdx * k) + 'px,' + (to.wdy * k) + 'px) scale(' + (1 + (to.ws - 1) * k) + ')';
-        var mr = mark.getBoundingClientRect(), cx = mr.left + mr.width / 2, cy = mr.top + mr.height / 2, R = Math.hypot(innerWidth, innerHeight) * 1.05 * inOut(P(t, LAND - .12, END - .04));   // …then the page opens from it
-        var hole = 'radial-gradient(circle at ' + cx + 'px ' + cy + 'px, transparent ' + R + 'px, #000 ' + (R + 2) + 'px)';
-        bg.style.webkitMaskImage = bg.style.maskImage = hole;
-      }
+    // 3. the wordmark writes in from the left, out of a soft blur
+    var wk = outExpo(P(t, .78, 1.45)), edge = (wk * 125 - 15).toFixed(1);
+    word.style.webkitMaskImage = word.style.maskImage = wk >= 1 ? '' : 'linear-gradient(90deg, #000 ' + edge + '%, transparent ' + (+edge + 18) + '%)';
+    word.style.filter = wk >= 1 ? '' : 'blur(' + ((1 - wk) * 1.6).toFixed(2) + 'px)';
+    // 4. after it lands, the page opens from the logo (iris), and the rest of the nav fades in
+    if (t > LAND - .12) {
+      var mr = mark.getBoundingClientRect(), cx = mr.left + mr.width / 2, cy = mr.top + mr.height / 2, Rr = Math.hypot(innerWidth, innerHeight) * 1.05 * inOut(P(t, LAND - .12, END - .04));
+      var hole = 'radial-gradient(circle at ' + cx + 'px ' + cy + 'px, transparent ' + Rr + 'px, #000 ' + (Rr + 2) + 'px)';
+      bg.style.webkitMaskImage = bg.style.maskImage = hole;
+      if (t > LAND) root.classList.add('intro-nav');
     }
-    if (t >= END) { root.classList.remove('intro-on'); el.style.transition = 'opacity .25s'; el.style.opacity = '0'; setTimeout(function () { el.remove(); }, 260); return; }
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
@@ -723,7 +707,7 @@
 </script>
 <div class="bg" aria-hidden="true"><div class="orb a"></div><div class="orb b"></div><div class="orb c"></div></div>
 <header class="nav" id="nav"><div class="wrap">
-  <a class="brand" href="./"><img src="icon128.png" alt=""><span>Canvas<b>+</b></span></a>
+  <a class="brand" href="./"><svg class="bmk" viewBox="18 5.5 160 160" aria-hidden="true"><g class="bfill" fill="#BB0000"><path d="M95.5 36A4.5 4.5 0 0 1 100 40.5V55.5A4.5 4.5 0 0 1 95.5 60H61A9 9 0 0 0 52 69V120A9 9 0 0 0 61 129H116A9 9 0 0 0 125 120V104.5A4.5 4.5 0 0 1 129.5 100H144.5A4.5 4.5 0 0 1 149 104.5V123A30 30 0 0 1 119 153H58A30 30 0 0 1 28 123V66A30 30 0 0 1 58 36Z"/><g class="bplus"><rect x="107" y="36" width="61" height="24" rx="4.5"/><rect x="125" y="18" width="24" height="61" rx="4.5"/></g></g><g class="bdraw"><path pathLength="1" d="M95.5 36A4.5 4.5 0 0 1 100 40.5V55.5A4.5 4.5 0 0 1 95.5 60H61A9 9 0 0 0 52 69V120A9 9 0 0 0 61 129H116A9 9 0 0 0 125 120V104.5A4.5 4.5 0 0 1 129.5 100H144.5A4.5 4.5 0 0 1 149 104.5V123A30 30 0 0 1 119 153H58A30 30 0 0 1 28 123V66A30 30 0 0 1 58 36Z"/><rect pathLength="1" x="107" y="36" width="61" height="24" rx="4.5"/><rect pathLength="1" x="125" y="18" width="24" height="61" rx="4.5"/></g><clipPath id="bclip"><path d="M95.5 36A4.5 4.5 0 0 1 100 40.5V55.5A4.5 4.5 0 0 1 95.5 60H61A9 9 0 0 0 52 69V120A9 9 0 0 0 61 129H116A9 9 0 0 0 125 120V104.5A4.5 4.5 0 0 1 129.5 100H144.5A4.5 4.5 0 0 1 149 104.5V123A30 30 0 0 1 119 153H58A30 30 0 0 1 28 123V66A30 30 0 0 1 58 36Z"/><rect x="107" y="36" width="61" height="24" rx="4.5"/><rect x="125" y="18" width="24" height="61" rx="4.5"/></clipPath><linearGradient id="bsw" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".75"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient><rect class="bsweep" clip-path="url(#bclip)" x="-60" y="0" width="70" height="180" fill="url(#bsw)" opacity="0" transform="skewX(-18)"/></svg><span>Canvas<b>+</b></span></a>
   <nav class="links">
     <a href="#features"><span class="en">Features</span><span class="zh">功能</span></a>
     <a href="#ai">Canvas+ AI</a>
