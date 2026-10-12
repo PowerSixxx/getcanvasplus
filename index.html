@@ -623,7 +623,7 @@
 </head>
 <body>
 <!-- Opening animation: the nav's own logo is lifted to the centre, draws itself, fills, the wordmark writes in, then it flies home and the page opens around it.
-     It is the real nav logo the whole time, so it lands exactly where it belongs. Once per session; skipped on any input or with reduced motion. -->
+     It is the real nav logo the whole time, so it lands exactly where it belongs. Plays on every load or refresh; skipped on any input or with reduced motion. -->
 <style>
   .brand .bmk { width: 30px; height: 30px; flex: none; overflow: visible; }
   .brand .bdraw { display: none; }
@@ -643,10 +643,8 @@
 <script>
 (function () {
   var el = document.getElementById('intro'), root = document.documentElement, q = new URLSearchParams(location.search);
-  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches, seen = false;
-  try { seen = sessionStorage.getItem('cp-intro') === '1'; } catch (e) {}
-  if (q.has('nointro') || reduce || (seen && !q.has('intro'))) { el.remove(); return; }
-  try { sessionStorage.setItem('cp-intro', '1'); } catch (e) {}
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (q.has('nointro') || reduce) { el.remove(); return; }
   root.classList.add('intro-on');
   var bg = el.querySelector('.ibg'), glow = el.querySelector('.iglow');
   var brand, mark, word, fill, plus, draw, draws, sweep, R0 = null;
