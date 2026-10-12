@@ -126,7 +126,7 @@
   .p-tab { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
   @container cp (max-width: 400px) { .p-tab { font-size: 11px !important; gap: 2px; } .p-tab .rd { display: none; } .p-tab svg { width: 10px; height: 10px; }
     .p-filters { gap: 6px; } .p-tog { font-size: 11px; gap: 4px; } .p-ib { gap: 4px; } .p-ib span { width: 24px; height: 24px; } .p-seg button { padding: 5px 6px; } }
-  @container cp (max-width: 350px) { .p-ib span:first-child { display: none; } }
+  @container cp (max-width: 350px) { .p-ib span:nth-child(2) { display: none; } }
   .p-tab.ai { color: var(--p-acc) !important; }
   .p-tab svg { width: 12px; height: 12px; }
   .p-tab .rd { width: 6px; height: 6px; border-radius: 50%; background: var(--p-acc); }
@@ -159,6 +159,72 @@
   .p-it .mt { color: var(--p-muted); font-size: 11.5px; display: flex; align-items: center; gap: 5px; margin-top: 2px; }
   .p-dot { width: 7px; height: 7px; border-radius: 50%; flex: none; transition: background .3s; }
   .p-wt { display: inline-block; margin-top: 4px; background: var(--p-soft); color: var(--p-acc); font-size: 10.5px; font-weight: 700; border-radius: 999px; padding: 1px 7px; }
+  /* 1.4.0: Types filter, share-of-grade chips, GPA home (same look as the extension) */
+  .p-wt.mid { background: var(--p-amber-bg); color: var(--p-amber); }
+  .p-wt:not(.hi):not(.mid) { background: var(--p-bg2); color: var(--p-fg); }
+  .p-wt.hi { background: var(--p-soft); color: var(--p-acc); }
+  .p-ib .on { color: var(--p-acc); }
+  .p-ib .p-kb { position: relative; cursor: pointer; transition: color .2s, border-color .2s, background .2s; }
+  .p-ib .p-kb.open { border-color: var(--p-softline); background: var(--p-soft); }
+  .p-ib .p-kb i { position: absolute; top: 4px; right: 4px; width: 6px; height: 6px; border-radius: 50%; background: var(--p-acc); box-shadow: 0 0 0 2px var(--p-bg); }
+  .p-kcard { background: var(--p-bg2); border-radius: 14px; padding: 11px 12px; margin: 2px 0 8px; transform-origin: 50% 0; animation: p-unfold .42s cubic-bezier(.34,1.4,.64,1); }
+  .p-kcard.still { animation: none; }
+  @keyframes p-unfold { from { opacity: 0; transform: translateY(-6px) scale(.97); clip-path: inset(0 0 100% 0 round 14px); } to { opacity: 1; transform: none; clip-path: inset(0 0 0 0 round 14px); } }
+  .p-khead { display: flex; align-items: center; gap: 7px; font-size: 13px; margin-bottom: 6px; }
+  .p-khead svg { width: 15px; height: 15px; color: var(--p-acc); }
+  .p-kchips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .p-kchip { display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px 5px 7px; border-radius: 999px; border: 1px solid var(--p-line); background: var(--p-bg);
+    color: var(--p-muted) !important; font-size: 12px !important; font-weight: 600 !important; cursor: pointer; transition: background .18s, color .18s, border-color .18s, transform .2s cubic-bezier(.34,1.56,.64,1); }
+  .p-kchip:active { transform: scale(.94); }
+  .p-kchip .kc { width: 15px; height: 15px; border-radius: 5px; border: 1.5px solid currentColor; display: grid; place-items: center; transition: background .18s, border-color .18s; }
+  .p-kchip .kc svg { width: 11px; height: 11px; opacity: 0; transform: scale(.5); transition: opacity .15s, transform .2s cubic-bezier(.34,1.56,.64,1); }
+  .p-kchip.on { color: var(--p-fg) !important; border-color: var(--p-softline); background: var(--p-soft); }
+  .p-kchip.on .kc { background: var(--p-acc); border-color: var(--p-acc); color: #fff; }
+  .p-kchip.on .kc svg { opacity: 1; transform: none; }
+  .p-kchip.pop { animation: p-pop .32s cubic-bezier(.34,1.56,.64,1); }
+  .p-kchip.pop .kc svg { animation: p-tick .3s cubic-bezier(.34,1.56,.64,1); }
+  @keyframes p-pop { 0% { transform: scale(.92); } 100% { transform: none; } }
+  @keyframes p-tick { from { transform: scale(.4); } to { transform: none; } }
+  .p-khint { margin: 7px 0 0; color: var(--p-muted); font-size: 11px; line-height: 1.5; }
+  .p-list.p-fade .p-it { animation: p-rise .38s cubic-bezier(.22,1,.36,1) both; }
+  .p-list.p-fade .p-it:nth-child(2) { animation-delay: .03s; } .p-list.p-fade .p-it:nth-child(3) { animation-delay: .06s; } .p-list.p-fade .p-it:nth-child(4) { animation-delay: .09s; }
+  .p-list.p-fade .p-it:nth-child(5) { animation-delay: .12s; } .p-list.p-fade .p-it:nth-child(n+6) { animation-delay: .15s; }
+  @keyframes p-rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  .p-empty { padding: 18px 12px; text-align: center; color: var(--p-muted); font-size: 12.5px; background: var(--p-bg2); border-radius: 12px; }
+  .p-empty a { color: var(--p-acc); font-weight: 700; cursor: pointer; }
+  .p-gpa { text-align: center; padding: 2px 0 6px; }
+  .p-dialw { position: relative; width: 180px; height: 100px; margin: 0 auto; }
+  .p-dial { width: 180px; height: 100px; }
+  .p-dial .arc { stroke-dasharray: var(--len) 100; animation: p-arc 1.1s cubic-bezier(.22,1,.36,1); }
+  @keyframes p-arc { from { stroke-dasharray: 0 100; } }
+  .p-gv { position: absolute; left: 0; right: 0; bottom: 4px; display: flex; justify-content: center; align-items: baseline; gap: 3px; }
+  .p-gv .l { position: absolute; left: 0; right: 0; bottom: 38px; color: var(--p-acc); font-weight: 800; font-size: 17px; }
+  .p-gv b { font-size: 34px; font-weight: 800; letter-spacing: -.02em; line-height: 1; }
+  .p-gv small { color: var(--p-muted); font-size: 11.5px; }
+  .p-gt { font-weight: 800; font-size: 13px; margin-top: 4px; }
+  .p-est { display: inline-block; font-weight: 600; font-size: 10.5px; color: var(--p-muted); background: var(--p-bg2); border: 1px solid var(--p-line); border-radius: 999px; padding: 0 7px; }
+  .p-gm { color: var(--p-muted); font-size: 11.5px; margin-top: 2px; }
+  .p-gp { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; margin-top: 5px; }
+  .p-gp svg { width: 12px; height: 12px; color: var(--p-acc); }
+  .p-gp .up { background: rgba(31,157,85,.12); color: #1f8a4c; font-weight: 800; border-radius: 999px; padding: 0 6px; }
+  .p-gb { display: inline-flex; align-items: center; gap: 3px; margin-top: 8px; padding: 4px 12px; border: 1px solid var(--p-line); border-radius: 999px; color: var(--p-acc); font-weight: 700; font-size: 12px; background: var(--p-bg); }
+  .p-gb svg { width: 12px; height: 12px; color: var(--p-muted); }
+  .p-cgs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .p-cg { text-align: left; border: 1px solid var(--p-line); border-radius: 14px; background: var(--p-bg); padding: 9px 10px 7px; cursor: pointer;
+    box-shadow: 0 1px 2px rgba(0,0,0,.04); transition: transform .25s cubic-bezier(.34,1.56,.64,1), box-shadow .25s, border-color .25s; }
+  .p-cg:hover { transform: translateY(-2px); box-shadow: 0 8px 20px -8px rgba(0,0,0,.18); border-color: var(--p-softline); }
+  .p-cg:active { transform: scale(.97); }
+  .p-cg .h { display: flex; align-items: center; gap: 6px; } .p-cg .h b { font-size: 13.5px; }
+  .p-cg small { display: block; color: var(--p-muted); font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .p-cg .v { display: flex; justify-content: space-between; align-items: baseline; margin: 3px 0 0; } .p-cg .v b { font-size: 17px; letter-spacing: -.01em; }
+  .p-cg .lt { font-weight: 800; font-size: 16px; } .p-cg .lt.g { color: #1f8a4c; } .p-cg .lt.b { color: #2563eb; } .p-cg .lt.o { color: var(--p-amber); }
+  .p-spark { width: 100%; height: auto; display: block; margin-top: 2px; } .p-spark text { font-size: 8px; font-weight: 700; }
+  .p-cg .d { display: flex; justify-content: space-between; color: var(--p-muted); font-size: 10px; padding-left: 12px; }
+  .p-back a.txt { width: auto; height: auto; border-radius: 999px; padding: 3px 10px 3px 4px; white-space: nowrap; gap: 2px; font-size: 12.5px; }
+  .p-back a.txt svg { width: 15px; height: 15px; }
+  .p-pane.p-push { animation: p-push .42s cubic-bezier(.22,1,.36,1); }
+  @keyframes p-push { from { opacity: .2; transform: translateX(18px); } to { opacity: 1; transform: none; } }
+  .demo.dark .p-gp .up { color: #4ade80; background: rgba(74,222,128,.12); } .demo.dark .p-cg .lt.g { color: #4ade80; } .demo.dark .p-cg .lt.b { color: #6ea8ff; }
   .p-rt { text-align: right; display: grid; justify-items: end; gap: 3px; }
   .p-cd { font-weight: 800; font-size: 11.5px; border-radius: 999px; padding: 2px 8px; white-space: nowrap; font-variant-numeric: tabular-nums; background: var(--p-bg2); }
   .p-cd.red { background: var(--p-row-hot); color: var(--p-acc); }
@@ -556,6 +622,105 @@
 </style>
 </head>
 <body>
+<!-- Opening animation: the C+ mark draws itself, fills, the wordmark writes in, then the logo flies into the nav while the page opens around it. Once per session; skipped on any input or with reduced motion. -->
+<style>
+  #intro { position: fixed; inset: 0; z-index: 9999; pointer-events: auto; }
+  #intro .ibg { position: absolute; inset: 0; background: var(--bg); }
+  #intro .iglow { position: absolute; left: 50%; top: 50%; width: 560px; height: 560px; margin: -280px 0 0 -280px; border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(225,25,35,.42), rgba(225,25,35,0)); opacity: 0; filter: blur(10px); }
+  #intro .ilogo { position: absolute; left: 50%; top: 50%; display: flex; align-items: center; gap: 22px; transform-origin: 50% 50%; will-change: transform; }
+  #intro .im { width: 104px; height: 104px; flex: none; overflow: visible; transform-origin: 50% 50%; }
+  #intro .im .draw * { fill: none; stroke: #e3242b; stroke-width: 3.2; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
+  #intro .im .fill * { fill: #BB0000; }
+  #intro .im .plus { transform-box: fill-box; transform-origin: 50% 50%; }
+  #intro .iw { font: 800 76px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif; letter-spacing: -.03em; color: var(--fg); white-space: nowrap; display: inline-flex; transform-origin: 0 50%; }
+  #intro .iw i { font-style: normal; display: inline-block; opacity: 0; }
+  #intro .iw i.iplus { color: #e3242b; }
+  html.intro-on .nav .brand { opacity: 0; }
+  html.intro-on, html.intro-on body { overflow: hidden; }
+</style>
+<div id="intro" aria-hidden="true">
+  <div class="ibg"></div><div class="iglow"></div>
+  <div class="ilogo">
+    <svg class="im" viewBox="25 12.5 146 146">
+      <defs><linearGradient id="isw" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".75"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+        <clipPath id="iclip"><path d="M95.5 36A4.5 4.5 0 0 1 100 40.5V55.5A4.5 4.5 0 0 1 95.5 60H61A9 9 0 0 0 52 69V120A9 9 0 0 0 61 129H116A9 9 0 0 0 125 120V104.5A4.5 4.5 0 0 1 129.5 100H144.5A4.5 4.5 0 0 1 149 104.5V123A30 30 0 0 1 119 153H58A30 30 0 0 1 28 123V66A30 30 0 0 1 58 36Z"/><rect x="107" y="36" width="61" height="24" rx="4.5"/><rect x="125" y="18" width="24" height="61" rx="4.5"/></clipPath></defs>
+      <g class="fill" opacity="0"><path d="M95.5 36A4.5 4.5 0 0 1 100 40.5V55.5A4.5 4.5 0 0 1 95.5 60H61A9 9 0 0 0 52 69V120A9 9 0 0 0 61 129H116A9 9 0 0 0 125 120V104.5A4.5 4.5 0 0 1 129.5 100H144.5A4.5 4.5 0 0 1 149 104.5V123A30 30 0 0 1 119 153H58A30 30 0 0 1 28 123V66A30 30 0 0 1 58 36Z"/>
+        <g class="plus"><rect x="107" y="36" width="61" height="24" rx="4.5"/><rect x="125" y="18" width="24" height="61" rx="4.5"/></g></g>
+      <g class="draw"><path pathLength="1" d="M95.5 36A4.5 4.5 0 0 1 100 40.5V55.5A4.5 4.5 0 0 1 95.5 60H61A9 9 0 0 0 52 69V120A9 9 0 0 0 61 129H116A9 9 0 0 0 125 120V104.5A4.5 4.5 0 0 1 129.5 100H144.5A4.5 4.5 0 0 1 149 104.5V123A30 30 0 0 1 119 153H58A30 30 0 0 1 28 123V66A30 30 0 0 1 58 36Z"/>
+        <rect pathLength="1" x="107" y="36" width="61" height="24" rx="4.5"/><rect pathLength="1" x="125" y="18" width="24" height="61" rx="4.5"/></g>
+      <rect class="sweep" clip-path="url(#iclip)" x="-60" y="0" width="70" height="180" fill="url(#isw)" opacity="0" transform="skewX(-18)"/>
+    </svg>
+    <span class="iw"><i>C</i><i>a</i><i>n</i><i>v</i><i>a</i><i>s</i><i class="iplus">+</i></span>
+  </div>
+</div>
+<script>
+(function () {
+  var el = document.getElementById('intro'), root = document.documentElement, q = new URLSearchParams(location.search);
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches, seen = false;
+  try { seen = sessionStorage.getItem('cp-intro') === '1'; } catch (e) {}
+  if (q.has('nointro') || reduce || (seen && !q.has('intro'))) { el.remove(); return; }
+  try { sessionStorage.setItem('cp-intro', '1'); } catch (e) {}
+  root.classList.add('intro-on');
+  var $ = function (s) { return el.querySelector(s); }, logo = $('.ilogo'), mark = $('.im'), word = $('.iw'), letters = [].slice.call(word.children);
+  var draws = [].slice.call(el.querySelectorAll('.draw *')), fill = $('.fill'), plus = $('.plus'), sweep = $('.sweep'), glow = $('.iglow'), bg = $('.ibg');
+  var clamp = function (v) { return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function (t, a, b) { return clamp((t - a) / (b - a)); };
+  var outExpo = function (k) { return k >= 1 ? 1 : 1 - Math.pow(2, -10 * k); }, inOut = function (k) { return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
+  var spring = function (k) { return k >= 1 ? 1 : 1 - Math.exp(-7 * k) * Math.cos(10 * k); };
+  var FLY = 1.62, LAND = 2.12, END = 2.72, t0 = performance.now(), skipAt = null, to = null, fit = 1;
+  // where the logo lands: the brand in the nav bar
+  function measure() {
+    var brand = document.querySelector('.nav .brand'); if (!brand) return null;
+    var img = brand.querySelector('img').getBoundingClientRect(), sp = brand.querySelector('span');
+    // the visible mark inside icon128.png spans x 8–120, y 10–118 of 128 px
+    var tx = img.left + img.width * 8 / 128, ty = img.top + img.height * 10 / 128, tw = img.width * 112 / 128;
+    var m = mark.getBoundingClientRect(), f = fill.getBoundingClientRect(), sc = tw / f.width;
+    var w = word.getBoundingClientRect(), sr = sp.getBoundingClientRect(), nf = parseFloat(getComputedStyle(sp).fontSize), wf = parseFloat(getComputedStyle(word).fontSize);
+    return { s: sc, dx: (tx - m.left - (f.left - m.left) * sc) / fit, dy: (ty - m.top - (f.top - m.top) * sc) / fit,
+      ws: nf / wf / fit, wdx: (sr.left - w.left) / fit, wdy: (sr.top + sr.height / 2 - (w.top + w.height / 2)) / fit };
+  }
+  function skip() { if (skipAt == null) { var t = (performance.now() - t0) / 1000; if (t < FLY - .05) { skipAt = t; } } }
+  ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(function (e) { addEventListener(e, skip, { passive: true, once: true }); });
+  function frame() {
+    var now = performance.now(), t = (now - t0) / 1000;   // one clock for start and frames
+    if (skipAt != null) t = FLY - .05 + (t - skipAt);   // skipped: jump straight to the landing
+    // 1. the outline draws itself
+    var d = inOut(P(t, .06, .78));
+    draws.forEach(function (p, i) { p.style.strokeDashoffset = 1 - inOut(P(t, .06 + i * .1, .7 + i * .08)); });
+    glow.style.opacity = (.85 * outExpo(P(t, .1, .9)) * (1 - P(t, FLY, FLY + .3))).toFixed(3);
+    glow.style.transform = 'scale(' + (.7 + .3 * outExpo(P(t, .1, 1.2))) + ')';
+    // 2. it fills, the plus pops
+    var f = outExpo(P(t, .62, 1.0));
+    fill.setAttribute('opacity', f.toFixed(3));
+    el.querySelector('.draw').setAttribute('opacity', (1 - P(t, .8, 1.05)).toFixed(3));
+    plus.style.transform = 'scale(' + (t < .62 ? .6 : .6 + .4 * spring(P(t, .62, 1.12))) + ')';
+    mark.style.filter = 'drop-shadow(0 0 ' + (18 * (1 - P(t, 1.1, FLY))).toFixed(1) + 'px rgba(230,30,40,.55))';
+    // light sweeps across the mark
+    var sw = P(t, 1.05, 1.55); sweep.setAttribute('opacity', sw > 0 && sw < 1 ? '1' : '0'); sweep.setAttribute('x', (-60 + sw * 260).toFixed(1));
+    // 3. the wordmark writes in, letter by letter
+    letters.forEach(function (l, i) { var k = outExpo(P(t, .78 + i * .055, 1.28 + i * .055));
+      l.style.opacity = k.toFixed(3); l.style.transform = 'translateY(' + ((1 - k) * 18).toFixed(1) + 'px)'; l.style.filter = k < .999 ? 'blur(' + ((1 - k) * 8).toFixed(1) + 'px)' : 'none'; });
+    // centred group; 4. it flies into the nav while the page opens around it (iris)
+    fit = Math.min(1, (innerWidth - 40) / logo.offsetWidth);   // phones: the whole logo fits the screen
+    var base = 'translate(-50%,-50%) scale(' + fit + ')';
+    if (t < FLY) { logo.style.transform = 'translate(-50%,-50%) scale(' + fit * (.94 + .06 * outExpo(P(t, 0, 1.2))) + ')'; mark.style.transform = word.style.transform = ''; }
+    else {
+      if (!to) { logo.style.transform = base; to = measure(); }
+      var k = inOut(P(t, FLY, LAND));                  // the logo lands first…
+      if (to) {
+        mark.style.transform = 'translate(' + (to.dx * k) + 'px,' + (to.dy * k) + 'px) scale(' + (1 + (to.s - 1) * k) + ')'; mark.style.transformOrigin = '0 0';
+        word.style.transform = 'translate(' + (to.wdx * k) + 'px,' + (to.wdy * k) + 'px) scale(' + (1 + (to.ws - 1) * k) + ')';
+        var mr = mark.getBoundingClientRect(), cx = mr.left + mr.width / 2, cy = mr.top + mr.height / 2, R = Math.hypot(innerWidth, innerHeight) * 1.05 * inOut(P(t, LAND - .12, END - .04));   // …then the page opens from it
+        var hole = 'radial-gradient(circle at ' + cx + 'px ' + cy + 'px, transparent ' + R + 'px, #000 ' + (R + 2) + 'px)';
+        bg.style.webkitMaskImage = bg.style.maskImage = hole;
+      }
+    }
+    if (t >= END) { root.classList.remove('intro-on'); el.style.transition = 'opacity .25s'; el.style.opacity = '0'; setTimeout(function () { el.remove(); }, 260); return; }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
 <div class="bg" aria-hidden="true"><div class="orb a"></div><div class="orb b"></div><div class="orb c"></div></div>
 <header class="nav" id="nav"><div class="wrap">
   <a class="brand" href="./"><img src="icon128.png" alt=""><span>Canvas<b>+</b></span></a>
@@ -601,7 +766,7 @@
   <h2 class="rv d1"><span class="en">Less chaos. More semester.</span><span class="zh">少一点混乱，多一点从容。</span></h2></div>
   <div class="film rv d2" id="film-box">
     <video id="film-video" preload="metadata" playsinline poster="film-poster.jpg" width="1920" height="1080" aria-label="Canvas+ film"><source src="film.mp4" type="video/mp4"></video>
-    <button class="film-play" id="film-play" type="button" aria-label="Play the Canvas+ film"><span class="ring"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg></span><span class="len"><span><span class="en">Watch the film</span><span class="zh">播放宣传片</span></span><small>0:55</small></span></button>
+    <button class="film-play" id="film-play" type="button" aria-label="Play the Canvas+ film"><span class="ring"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg></span><span class="len"><span><span class="en">Watch the film</span><span class="zh">播放宣传片</span></span><small>1:00</small></span></button>
   </div>
   <script>(function () { var b = document.getElementById('film-box'), v = document.getElementById('film-video'), p = document.getElementById('film-play');
     p.addEventListener('click', function () { b.classList.add('playing'); v.controls = true; v.play(); });
@@ -734,6 +899,6 @@
     <span><span class="en">Made by</span><span class="zh">作者</span> <a href="https://www.baowenliu.com" style="color:var(--fg)">Baowen Liu</a> · <a href="mailto:support@getcanvasplus.com">support@getcanvasplus.com</a> · <a href="privacy.html"><span class="en">Privacy</span><span class="zh">隐私说明</span></a></span></div>
   <p class="legal">© 2026 Canvas+ · <span class="en">Canvas+ is an independent project, not affiliated with or endorsed by Instructure or any school. Canvas is a trademark of Instructure, Inc. School names only show where Canvas+ works with the school’s Canvas; they don’t imply any partnership or endorsement.</span><span class="zh">Canvas+ 是独立项目，与 Instructure 和任何学校均无关联，也未获得其认可。Canvas 是 Instructure, Inc. 的商标。页面上的学校名称仅表示 Canvas+ 可以在该校的 Canvas 上使用，不代表任何合作或认可。</span></p>
 </div></footer>
-<script src="site.js?v=05145e10"></script>
+<script src="site.js?v=40da7a07"></script>
 </body>
 </html>
