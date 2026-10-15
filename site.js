@@ -8,10 +8,21 @@
   try { saved = localStorage.getItem(key); } catch (e) {}
   var q = new URLSearchParams(location.search).get('lang');
   var EMBED = !!window.CP_EMBED;   // inside an <iframe> on another page (demo.html): only the panel
-  var lang = q || saved || (/^zh/i.test(navigator.language || '') ? 'zh' : 'en');
+  var PAGE = root.getAttribute('data-page-lang');   // 'zh' on /zh/ — that page always opens in Chinese
+  var lang = q || PAGE || saved || (/^zh/i.test(navigator.language || '') ? 'zh' : 'en');
+  var TITLE = { en: 'Canvas+ (Canvas Plus) · A better Canvas for students', zh: 'Canvas+ (Canvas Plus) · Canvas 插件：截止日期、期末成绩计算器、GPA 和 AI 学习助手' };
+  // the switch button also moves the address between / and /zh/, so a refresh or a shared link keeps the language
+  function moveUrl(l) {
+    if (EMBED || !/^https?:$/.test(location.protocol) || !$('#lang')) return;
+    try {
+      var path = location.pathname, en = PAGE === 'zh' ? path.replace(/zh\/(index\.html)?$/, '') : path.replace(/index\.html$/, '');
+      var u = new URL(location.href); u.pathname = l === 'zh' ? en + 'zh/' : en; u.searchParams.delete('lang');
+      history.replaceState(null, '', u.pathname + u.search + u.hash); document.title = TITLE[l];
+    } catch (e) {}
+  }
   var zh = function () { return root.getAttribute('data-lang') === 'zh'; };
   function setLang(l) { root.setAttribute('data-lang', l); root.lang = l === 'zh' ? 'zh-CN' : 'en'; if (!EMBED) try { localStorage.setItem(key, l); } catch (e) {} renderDemo(); }
-  if ($('#lang')) $('#lang').addEventListener('click', function () { setLang(zh() ? 'en' : 'zh'); });
+  if ($('#lang')) $('#lang').addEventListener('click', function () { var l = zh() ? 'en' : 'zh'; setLang(l); moveUrl(l); });
 
   // ---- nav border + reveal on scroll + tile glow ----
   var nav = $('#nav');
