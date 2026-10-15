@@ -15,7 +15,7 @@
   function moveUrl(l) {
     if (EMBED || !/^https?:$/.test(location.protocol) || !$('#lang')) return;
     try {
-      var path = location.pathname, en = PAGE === 'zh' ? path.replace(/zh\/(index\.html)?$/, '') : path.replace(/index\.html$/, '');
+      var en = location.pathname.replace(/(zh\/)*(index\.html)?$/, '');   // the site root, worked out from where we are now
       var u = new URL(location.href); u.pathname = l === 'zh' ? en + 'zh/' : en; u.searchParams.delete('lang');
       history.replaceState(null, '', u.pathname + u.search + u.hash); document.title = TITLE[l];
     } catch (e) {}
