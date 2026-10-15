@@ -12,11 +12,23 @@
   var lang = q || PAGE || saved || (/^zh/i.test(navigator.language || '') ? 'zh' : 'en');
   var TITLE = { en: 'Canvas+ (Canvas Plus) · A better Canvas for students', zh: 'Canvas+ (Canvas Plus) · Canvas 插件：截止日期、期末成绩计算器、GPA 和 AI 学习助手' };
   // the switch button also moves the address between / and /zh/, so a refresh or a shared link keeps the language
+  var fixed = false;
   function moveUrl(l) {
     if (EMBED || !/^https?:$/.test(location.protocol) || !$('#lang')) return;
     try {
       var en = location.pathname.replace(/(zh\/)*(index\.html)?$/, '');   // the site root, worked out from where we are now
       var u = new URL(location.href); u.pathname = l === 'zh' ? en + 'zh/' : en; u.searchParams.delete('lang');
+      // Relative links and images (shot-x.png, ../privacy.html, film.mp4…) would be read against the NEW address
+      // once it changes, and point at files that don't exist. Pin them to full URLs first — once is enough.
+      if (!fixed) {
+        fixed = true;
+        $$('[src],[href],[poster],[data-src],[data-poster]').forEach(function (el) {
+          ['src', 'href', 'poster', 'data-src', 'data-poster'].forEach(function (a) {
+            var v = el.getAttribute(a);
+            if (v && !/^([a-z][a-z0-9+.-]*:|#|\/\/)/i.test(v) && el.tagName !== 'LINK') el.setAttribute(a, new URL(v, location.href).href);
+          });
+        });
+      }
       history.replaceState(null, '', u.pathname + u.search + u.hash); document.title = TITLE[l];
     } catch (e) {}
   }
