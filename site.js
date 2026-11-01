@@ -500,7 +500,7 @@
   addEventListener('resize', onStack);
   // Clicking a name scrolls to where that card sits on top.
   sb.forEach(function (b, k) { b.addEventListener('click', function () {
-    var c = cards[k], step = c.offsetHeight + parseFloat(getComputedStyle(c).marginBottom);
+    var c = cards[k], step = c.offsetHeight + (parseFloat(getComputedStyle(stack).rowGap) || 0);
     var y = stack.getBoundingClientRect().top + scrollY + k * step - stickTop(c) + 2;
     scrollTo({ top: y, behavior: reduce ? 'auto' : 'smooth' });
   }); });
@@ -526,4 +526,35 @@
     var th = new URLSearchParams(location.search).get('theme'); if (th === 'dark') window.cpDemo.setDark(true);
     addEventListener('message', function (e) { var d = e.data || {}; if (d.cpDemo) { if (d.lang) window.cpDemo.setLang(d.lang); if (d.theme) window.cpDemo.setDark(d.theme === 'dark'); } });
   }
+})();
+
+// ---- theme: follows the system until the visitor picks light or dark (the choice is kept) ----
+(function () {
+  var root = document.documentElement, btn = document.getElementById('theme');
+  var mq = window.matchMedia ? matchMedia('(prefers-color-scheme: dark)') : null;
+  function sys() { return mq && mq.matches ? 'dark' : 'light'; }
+  function get() { try { var t = localStorage.getItem('cp-theme'); return t === 'light' || t === 'dark' ? t : 'auto'; } catch (e) { return 'auto'; } }
+  var LABEL = { auto: ['Theme: system', '主题：跟随系统'], light: ['Theme: light', '主题：浅色'], dark: ['Theme: dark', '主题：深色'] };
+  function apply(mode) {
+    if (mode === 'auto') { root.removeAttribute('data-theme'); root.style.colorScheme = ''; }
+    else { root.setAttribute('data-theme', mode); root.style.colorScheme = mode; }
+    var shown = mode === 'auto' ? sys() : mode;
+    [].forEach.call(document.querySelectorAll('meta[name="theme-color"]'), function (m) { m.setAttribute('content', shown === 'dark' ? '#000000' : '#ffffff'); });
+    if (btn) {
+      btn.setAttribute('data-mode', mode);
+      var l = LABEL[mode][root.getAttribute('data-lang') === 'zh' ? 1 : 0];
+      btn.title = l; btn.setAttribute('aria-label', l);
+    }
+  }
+  apply(get());
+  if (mq && mq.addEventListener) mq.addEventListener('change', function () { if (get() === 'auto') apply('auto'); });
+  if (btn) btn.addEventListener('click', function () {
+    // system → the opposite of what you see now → the same as the system → back to system,
+    // so the first click always changes the page
+    var cur = get(), s = sys(), next = cur === 'auto' ? (s === 'dark' ? 'light' : 'dark') : (cur !== s ? s : 'auto');
+    try { if (next === 'auto') localStorage.removeItem('cp-theme'); else localStorage.setItem('cp-theme', next); } catch (e) {}
+    apply(next);
+  });
+  // keep the tooltip in the page language
+  new MutationObserver(function () { apply(get()); }).observe(root, { attributes: true, attributeFilter: ['data-lang'] });
 })();

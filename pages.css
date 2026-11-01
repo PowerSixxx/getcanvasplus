@@ -1,7 +1,10 @@
 :root { --bgrgb: 0,0,0; --bg: #000; --card: rgba(255,255,255,.04); --line: rgba(255,255,255,.1); --fg: #f3f3f6; --muted: #9b9ca8; --dim: #6c6d78;
   --red: #ff3b47; --red-tx: #ff7a82; --redglow: rgba(255,45,60,.35); --ok: #3ddc84; }
-@media (prefers-color-scheme: light) { :root { --bgrgb: 255,255,255; --bg: #fff; --card: rgba(0,0,0,.03); --line: rgba(0,0,0,.09); --fg: #111216; --muted: #5d6170; --dim: #8a8d99;
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) { --bgrgb: 255,255,255; --bg: #fff; --card: rgba(0,0,0,.03); --line: rgba(0,0,0,.09); --fg: #111216; --muted: #5d6170; --dim: #8a8d99;
   --red: #e01e2b; --red-tx: #c3121d; --redglow: rgba(224,30,43,.28); --ok: #17a34a; } }
+  /* chosen with the theme switch */
+  :root[data-theme="light"] { --bgrgb: 255,255,255; --bg: #fff; --card: rgba(0,0,0,.03); --line: rgba(0,0,0,.09); --fg: #111216; --muted: #5d6170; --dim: #8a8d99;
+  --red: #e01e2b; --red-tx: #c3121d; --redglow: rgba(224,30,43,.28); --ok: #17a34a; }
 * { box-sizing: border-box; }
 html, body { overflow-x: clip; }
 body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
