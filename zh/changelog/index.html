@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<script>try{var t=localStorage.getItem("cp-theme");if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t}}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Canvas+ 更新日志 — 每个版本的新功能</title>
+<meta name="description" content="Canvas+ 每个版本的新功能、改进和问题修复，最新的在最上面。">
+<link rel="canonical" href="https://getcanvasplus.com/zh/changelog/">
+<link rel="alternate" hreflang="en" href="https://getcanvasplus.com/changelog/">
+<link rel="alternate" hreflang="zh-Hans" href="https://getcanvasplus.com/zh/changelog/">
+<link rel="alternate" hreflang="x-default" href="https://getcanvasplus.com/changelog/">
+<link rel="icon" href="/icon128.png">
+<meta name="color-scheme" content="light dark">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Canvas+ (Canvas Plus)">
+<meta property="og:title" content="Canvas+ 更新日志 — 每个版本的新功能">
+<meta property="og:description" content="Canvas+ 每个版本的新功能、改进和问题修复，最新的在最上面。">
+<meta property="og:url" content="https://getcanvasplus.com/zh/changelog/">
+<link rel="stylesheet" href="/pages.css">
+<style>
+.cl-hero { padding-top: 64px; padding-bottom: 28px; }
+.cl-hero .lead { margin-bottom: 0; }
+.cl-langs { margin-top: 18px; font-size: 14px; color: var(--muted); }
+.cl-langs a { color: var(--red-tx); }
+.cl { list-style: none; margin: 0; padding: 8px 0 24px; position: relative; max-width: 820px; }
+.cl::before { content: ""; position: absolute; left: 7px; top: 22px; bottom: 30px; width: 2px; background: var(--line); }
+.cl > li { position: relative; padding: 0 0 34px 40px; scroll-margin-top: 90px; }
+.cl > li::before { content: ""; position: absolute; left: 0; top: 7px; width: 16px; height: 16px; border-radius: 50%; background: var(--bg); border: 2px solid var(--dim); box-sizing: border-box; }
+.cl > li.latest::before { border-color: var(--red); background: var(--red); box-shadow: 0 0 0 5px var(--redglow); }
+.cl-item { background: var(--card); border: 1px solid var(--line); border-radius: 16px; transition: border-color .2s; }
+.cl-item[open] { border-color: color-mix(in srgb, var(--fg) 18%, transparent); }
+.cl-head { display: flex; align-items: center; gap: 10px; padding: 13px 18px; cursor: pointer; list-style: none; border-radius: 16px; user-select: none; }
+.cl-head::-webkit-details-marker { display: none; }
+.cl-head h2 { font-size: 20px; margin: 0; letter-spacing: -.01em; }
+.cl-tag { font-size: 12px; font-weight: 700; color: #fff; background: var(--red); border-radius: 999px; padding: 2px 9px; }
+.cl-n { margin-left: auto; color: var(--dim); font-size: 14px; white-space: nowrap; }
+.cl-chev { width: 18px; height: 18px; flex: none; color: var(--muted); transition: transform .25s; }
+.cl-item[open] .cl-chev { transform: rotate(180deg); }
+@media (hover: hover) { .cl-head:hover .cl-chev { color: var(--fg); } }
+.cl-head:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+.cl-card { padding: 2px 18px 16px; }
+.cl-tools { display: flex; justify-content: flex-end; max-width: 820px; margin: 0 0 8px; }
+.cl-tools button { font: inherit; font-size: 14px; color: var(--muted); background: none; border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+@media (hover: hover) { .cl-tools button:hover { color: var(--fg); border-color: var(--red); } }
+.cl > li { padding-bottom: 14px; }
+.cl > li::before { top: 17px; }
+.cl-card ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
+.cl-card li { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: baseline; font-size: 15px; }
+.k { font-size: 11.5px; font-weight: 700; border-radius: 6px; padding: 1px 7px; white-space: nowrap; min-width: 70px; text-align: center; }
+.k.new { color: var(--red-tx); background: color-mix(in srgb, var(--red) 14%, transparent); }
+.k.better { color: #2f7de1; background: rgba(47,125,225,.13); }
+.k.fix { color: var(--ok); background: color-mix(in srgb, var(--ok) 14%, transparent); }
+.cl-mac { color: var(--muted); font-size: 15px; padding-bottom: 56px; }
+.cl-mac a { color: var(--red-tx); }
+@media (max-width: 560px) { .cl-card li { grid-template-columns: 1fr; gap: 4px; } .k { justify-self: start; } }
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "name": "Canvas+ 更新日志 — 每个版本的新功能", "url": "https://getcanvasplus.com/zh/changelog/", "description": "Canvas+ 每个版本的新功能、改进和问题修复，最新的在最上面。", "inLanguage": "zh-Hans", "isPartOf": {"@type": "WebSite", "name": "Canvas+", "url": "https://getcanvasplus.com/"}, "about": {"@type": "SoftwareApplication", "name": "Canvas+", "alternateName": ["Canvas Plus", "CanvasPlus"], "softwareVersion": "1.4.4", "applicationCategory": "EducationalApplication", "operatingSystem": "Chrome", "downloadUrl": "https://chromewebstore.google.com/detail/enihdeipikgagnnkpnanlhfechaflmif"}}</script>
+</head>
+<body>
+<header class="nav"><div class="wrap">
+  <a class="brand" href="/zh/"><svg viewBox="18 5.5 160 160" aria-hidden="true"><g fill="#BB0000"><path d="M95.5 36A4.5 4.5 0 0 1 100 40.5V55.5A4.5 4.5 0 0 1 95.5 60H61A9 9 0 0 0 52 69V120A9 9 0 0 0 61 129H116A9 9 0 0 0 125 120V104.5A4.5 4.5 0 0 1 129.5 100H144.5A4.5 4.5 0 0 1 149 104.5V123A30 30 0 0 1 119 153H58A30 30 0 0 1 28 123V66A30 30 0 0 1 58 36Z"/><rect x="107" y="36" width="61" height="24" rx="4.5"/><rect x="125" y="18" width="24" height="61" rx="4.5"/></g></svg><span>Canvas<b>+</b></span></a>
+  <nav aria-label="Main"><a href="/zh/#features">功能</a><a href="/zh/#ai">Canvas+ AI</a><a href="/zh/#pricing">价格</a><a href="/zh/#faq">常见问题</a></nav>
+  <a class="btn sm" href="https://chromewebstore.google.com/detail/enihdeipikgagnnkpnanlhfechaflmif">添加到 Chrome</a>
+</div></header>
+<main>
+<section class="wrap cl-hero">
+  <span class="eyebrow">更新日志</span>
+  <h1>Canvas+ 更新了什么</h1>
+  <p class="lead">Canvas+ Chrome 插件的每一个版本，最新的在最上面。Chrome 会自动帮你更新。</p>
+  <p class="cl-langs"><a href="/changelog/" hreflang="en">English</a></p>
+</section>
+<section class="wrap">
+<div class="cl-tools"><button type="button" id="cl-all" data-expand="全部展开" data-collapse="全部收起">全部展开</button></div>
+<ol class="cl">
+<li id="v1.4.4" class="latest"><details class="cl-item"><summary class="cl-head"><h2>1.4.4</h2><span class="cl-tag">最新</span><span class="cl-n">2 项改动</span><svg class="cl-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><div class="cl-card"><ul><li><span class="k better">改进</span><span>工具栏图标上的红色数字和网页悬浮按钮、Mac 版统一：都显示 48 小时内到期的数量。</span></li><li><span class="k new">新功能</span><span>「界面美化」底部显示当前版本号，点一下就能打开这份更新日志。</span></li></ul></div></details></li>
+<li id="v1.4.3"><details class="cl-item"><summary class="cl-head"><h2>1.4.3</h2><span class="cl-n">5 项改动</span><svg class="cl-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><div class="cl-card"><ul><li><span class="k new">新功能</span><span>新增 WAM（加权平均分）算法，可替代 GPA，内置澳洲（HD / D / CR / P）、墨尔本（H1 / H2A…）和英国（1st / 2:1…）等级预设，输入分数就能算“如果考到这个分”。</span></li><li><span class="k better">改进</span><span>用 WAM 时，期末计算器默认以最高等级为目标。</span></li><li><span class="k new">新功能</span><span>「界面美化」里也能自定义等级换算。</span></li><li><span class="k new">新功能</span><span>「界面美化」底部新增 Canvas+ Mac 版下载入口（仅在 Mac 上显示）。</span></li><li><span class="k better">改进</span><span>切换按钮改为统一的圆角胶囊样式。</span></li></ul></div></details></li>
+<li id="v1.4.2"><details class="cl-item"><summary class="cl-head"><h2>1.4.2</h2><span class="cl-n">6 项改动</span><svg class="cl-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><div class="cl-card"><ul><li><span class="k new">新功能</span><span>Canvas+ 阅读器支持高亮和批注：4 种颜色、可写笔记，扫描件、图片和公式可以框选高亮；“笔记”栏按页列出。</span></li><li><span class="k new">新功能</span><span>下载“课件 + 笔记”：把高亮和批注写进原 PDF。</span></li><li><span class="k new">新功能</span><span>「我的笔记」（AI 课程页）：所有高亮按课程、按文件汇总。</span></li><li><span class="k new">新功能</span><span>每周负荷：作业列表上方用色块显示未来 4 周有多忙，点一周就能看到要交什么。</span></li><li><span class="k better">改进</span><span>课程菜单的“自定义菜单”更简洁，新增“仅本课程”开关。</span></li><li><span class="k better">改进</span><span>整体换成圆角胶囊风格，GPA 圆环加入动画。</span></li></ul></div></details></li>
+<li id="v1.4.1"><details class="cl-item"><summary class="cl-head"><h2>1.4.1</h2><span class="cl-n">2 项改动</span><svg class="cl-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><div class="cl-card"><ul><li><span class="k new">新功能</span><span>Canvas+ 阅读器（Beta）：Canvas 上的 PDF 可以全屏打开，25%–800% 缩放依然清晰，按章节跳转；PDF 链接旁会出现“阅读器”按钮。</span></li><li><span class="k new">新功能</span><span>文件预览可以从角落、右边或底部拖动调整大小（可在「界面美化」里开关）。</span></li></ul></div></details></li>
+<li id="v1.4.0"><details class="cl-item"><summary class="cl-head"><h2>1.4.0</h2><span class="cl-n">4 项改动</span><svg class="cl-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><div class="cl-card"><ul><li><span class="k new">新功能</span><span>全新 C+ 标志，统一使用 OSU 红，包括工具栏图标和邮件。</span></li><li><span class="k better">改进</span><span>课程问答的回答边写边显示。</span></li><li><span class="k better">改进</span><span>加载时显示和内容形状一致的占位，再平滑展开。</span></li><li><span class="k better">改进</span><span>标签栏和切换按钮加入液态玻璃效果，整体排版细节优化。</span></li></ul></div></details></li>
+<li id="v1.3.2"><details class="cl-item"><summary class="cl-head"><h2>1.3.2</h2><span class="cl-n">2 项改动</span><svg class="cl-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><div class="cl-card"><ul><li><span class="k new">新功能</span><span>作业可以按类型筛选：作业、测验、讨论、日程；红点数字和提醒也跟着筛选。</span></li><li><span class="k fix">修复</span><span>已结束的日程不再显示为逾期（显示“已结束”/“进行中”）。</span></li></ul></div></details></li>
+<li id="v1.3.1"><details class="cl-item"><summary class="cl-head"><h2>1.3.1</h2><span class="cl-n">2 项改动</span><svg class="cl-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><div class="cl-card"><ul><li><span class="k new">新功能</span><span>每门课一个详情页：成绩和这门课的 AI 工具（问答、复习包、错题本）都在一起。</span></li><li><span class="k better">改进</span><span>安装包更小，加载更快。</span></li></ul></div></details></li>
+<li id="v1.3.0"><details class="cl-item"><summary class="cl-head"><h2>1.3.0</h2><span class="cl-n">2 项改动</span><svg class="cl-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><div class="cl-card"><ul><li><span class="k new">新功能</span><span>工具栏小窗口：不用打开 Canvas，点 Chrome 工具栏里的 Canvas+ 图标就能看到接下来要交什么，红色数字是快到期的数量。</span></li><li><span class="k better">改进</span><span>各处显示你的会员名称（Plus / Pro）。</span></li></ul></div></details></li>
+<li id="v1.2.8"><details class="cl-item"><summary class="cl-head"><h2>1.2.8</h2><span class="cl-n">2 项改动</span><svg class="cl-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><div class="cl-card"><ul><li><span class="k new">新功能</span><span>Canvas+ 会员上线：Plus 和 Pro 每天有更多 AI 次数。</span></li><li><span class="k better">改进</span><span>显示每日 AI 次数的重置时间；「界面美化」底部加入官网链接；客服邮箱改为 getcanvasplus.com。</span></li></ul></div></details></li>
+<li id="v1.2.7"><details class="cl-item"><summary class="cl-head"><h2>1.2.7</h2><span class="cl-n">1 项改动</span><svg class="cl-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><div class="cl-card"><ul><li><span class="k fix">修复</span><span>问题修复和稳定性改进。</span></li></ul></div></details></li>
+<li id="v1.2.6"><details class="cl-item"><summary class="cl-head"><h2>1.2.6</h2><span class="cl-n">4 项改动</span><svg class="cl-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><div class="cl-card"><ul><li><span class="k new">新功能</span><span>Zoom 课堂笔记：带时间戳的章节（点击跳转）、重点，以及课上提到的考试信息。</span></li><li><span class="k new">新功能</span><span>可以隐藏用不到的课程菜单项和最左侧菜单图标。</span></li><li><span class="k new">新功能</span><span>新增“复制诊断信息”，方便反馈问题。</span></li><li><span class="k better">改进</span><span>开始使用需要一个免费的 Canvas+ 账号（无需密码：Google 或邮箱验证码登录）。</span></li></ul></div></details></li>
+<li id="v1.2.5"><details class="cl-item"><summary class="cl-head"><h2>1.2.5</h2><span class="cl-n">1 项改动</span><svg class="cl-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><div class="cl-card"><ul><li><span class="k better">改进</span><span>提醒遵守课程的 AI 使用规定；每日 AI 次数说明更清楚。</span></li></ul></div></details></li>
+<li id="v1.2.4"><details class="cl-item"><summary class="cl-head"><h2>1.2.4</h2><span class="cl-n">1 项改动</span><svg class="cl-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><div class="cl-card"><ul><li><span class="k fix">修复</span><span>问题修复。</span></li></ul></div></details></li>
+<li id="v1.2.3"><details class="cl-item"><summary class="cl-head"><h2>1.2.3</h2><span class="cl-n">4 项改动</span><svg class="cl-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><div class="cl-card"><ul><li><span class="k new">新功能</span><span>支持读取和总结放在 Simple Syllabus 上的课程大纲。</span></li><li><span class="k new">新功能</span><span>课程大纲总结可以一键重新生成。</span></li><li><span class="k new">新功能</span><span>有新版本时提示“立即更新”。</span></li><li><span class="k new">新功能</span><span>预告 Plus 和 Pro 会员方案。</span></li></ul></div></details></li>
+<li id="v1.2.2"><details class="cl-item"><summary class="cl-head"><h2>1.2.2</h2><span class="cl-n">3 项改动</span><svg class="cl-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><div class="cl-card"><ul><li><span class="k new">新功能</span><span>成绩构成可以用饼图显示（实心 = 已出分，斜纹 = 未出分）。</span></li><li><span class="k better">改进</span><span>考试日期除了从大纲读取，也会从 Canvas 里的测验和作业找到。</span></li><li><span class="k new">新功能</span><span>可以更换激活码。</span></li></ul></div></details></li>
+<li id="v1.2.1"><details class="cl-item"><summary class="cl-head"><h2>1.2.1</h2><span class="cl-n">2 项改动</span><svg class="cl-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><div class="cl-card"><ul><li><span class="k new">新功能</span><span>作业截止可以用日历视图查看。</span></li><li><span class="k new">新功能</span><span>成绩走势：每门课的成绩是怎么变化过来的。</span></li></ul></div></details></li>
+<li id="v1.2.0"><details class="cl-item"><summary class="cl-head"><h2>1.2.0</h2><span class="cl-n">10 项改动</span><svg class="cl-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><div class="cl-card"><ul><li><span class="k new">新功能</span><span>考试复习包：根据考试范围内的课件生成提纲、练习题和闪卡。</span></li><li><span class="k new">新功能</span><span>错题本：自动收集做错的练习题，方便再练（可导出到 Anki）。</span></li><li><span class="k new">新功能</span><span>累计 GPA，可以自定义等级换算。</span></li><li><span class="k new">新功能</span><span>班级排名：估算你在班里的位置。</span></li><li><span class="k new">新功能</span><span>一键把整门课的文件打包下载成 .zip，按模块分文件夹。</span></li><li><span class="k new">新功能</span><span>「我的所有考试」：从每门课的大纲里读出考试，一键加入日历。</span></li><li><span class="k new">新功能</span><span>缺交作业：只显示本学期还没交的。</span></li><li><span class="k new">新功能</span><span>截止时间变动和考试前都会通知你。</span></li><li><span class="k new">新功能</span><span>反馈表单：问题和建议直接发给开发者。</span></li><li><span class="k better">改进</span><span>面板可以拖动调整大小。</span></li></ul></div></details></li>
+<li id="v1.1.0"><details class="cl-item"><summary class="cl-head"><h2>1.1.0</h2><span class="cl-n">6 项改动</span><svg class="cl-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><div class="cl-card"><ul><li><span class="k new">新功能</span><span>Canvas+ AI：作业分步拆解、课程大纲总结，以及只依据课程内容回答的课程问答。</span></li><li><span class="k new">新功能</span><span>每周汇总：本周的新作业、截止时间、成绩变化和公告。</span></li><li><span class="k new">新功能</span><span>邮件助手：帮你起草发给教授或助教的邮件，并填进 Canvas 收件箱。</span></li><li><span class="k new">新功能</span><span>新成绩和新公告通知。</span></li><li><span class="k new">新功能</span><span>Canvas 可以换成你自己的背景图。</span></li><li><span class="k new">新功能</span><span>Canvas+ 账号：用 Google 或邮箱验证码登录，无需密码。</span></li></ul></div></details></li>
+<li id="v1.0.1"><details class="cl-item"><summary class="cl-head"><h2>1.0.1</h2><span class="cl-n">1 项改动</span><svg class="cl-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><div class="cl-card"><ul><li><span class="k fix">修复</span><span>小问题修复。</span></li></ul></div></details></li>
+<li id="v1.0.0"><details class="cl-item"><summary class="cl-head"><h2>1.0.0</h2><span class="cl-n">6 项改动</span><svg class="cl-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><div class="cl-card"><ul><li><span class="k new">新功能</span><span>首次在 Chrome 应用商店发布。</span></li><li><span class="k new">新功能</span><span>所有作业截止时间一个列表看完，标出每项占总成绩多少，可以直接标记完成。</span></li><li><span class="k new">新功能</span><span>期末要考多少分？期末成绩计算器，支持权重和额外加分。</span></li><li><span class="k new">新功能</span><span>深色模式、课程配色和一键配色方案；隐藏 Canvas 里用不到的部分。</span></li><li><span class="k new">新功能</span><span>用 ⌘K / Ctrl+K 搜索所有内容。</span></li><li><span class="k new">新功能</span><span>截止提醒（提前 24 小时和 2 小时）和日历导出（.ics）。</span></li></ul></div></details></li>
+</ol>
+<p class="cl-mac">找 Mac 版？它的更新说明在 <a href="https://github.com/getcanvasplus/canvas-plus-desktop/releases">GitHub</a> 上。</p>
+</section>
+</main>
+<script>
+(function () {
+  var all = [].slice.call(document.querySelectorAll('.cl-item')), btn = document.getElementById('cl-all');
+  function sync() { var open = all.every(function (d) { return d.open; }); btn.textContent = open ? btn.dataset.collapse : btn.dataset.expand; }
+  btn.addEventListener('click', function () { var open = !all.every(function (d) { return d.open; }); all.forEach(function (d) { d.open = open; }); sync(); });
+  all.forEach(function (d) { d.addEventListener('toggle', sync); });
+  // A link to one version (e.g. from the extension: #v1.4.4) opens that one.
+  function fromHash() { var li = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    var d = li && li.querySelector('.cl-item'); if (d) { d.open = true; li.scrollIntoView(); } }
+  window.addEventListener('hashchange', fromHash); fromHash();
+})();
+</script>
+<footer><div class="wrap">
+  <div class="row"><span>Canvas+ (Canvas Plus) · 作者 <a href="https://www.baowenliu.com">Baowen Liu</a></span><span><a href="mailto:support@getcanvasplus.com">support@getcanvasplus.com</a> · <a href="/privacy-zh.html">隐私说明</a> · <a href="https://github.com/getcanvasplus">GitHub</a></span></div>
+  <p>© 2026 Canvas+ is an independent project, not affiliated with or endorsed by Instructure or any school. Canvas is a trademark of Instructure, Inc.</p>
+</div></footer>
+</body>
+</html>

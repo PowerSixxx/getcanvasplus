@@ -34,4 +34,10 @@
     <image:image><image:loc>https://getcanvasplus.com/img/assignment-reminders.webp</image:loc></image:image></url>
   <url><loc>https://getcanvasplus.com/privacy.html</loc><lastmod>2026-10-17</lastmod><priority>0.3</priority></url>
   <url><loc>https://getcanvasplus.com/privacy-zh.html</loc><lastmod>2026-10-17</lastmod><priority>0.3</priority></url>
+  <url><loc>https://getcanvasplus.com/changelog/</loc><lastmod>2026-11-07</lastmod><priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://getcanvasplus.com/changelog/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://getcanvasplus.com/zh/changelog/"/></url>
+  <url><loc>https://getcanvasplus.com/zh/changelog/</loc><lastmod>2026-11-07</lastmod><priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://getcanvasplus.com/changelog/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://getcanvasplus.com/zh/changelog/"/></url>
 </urlset>
