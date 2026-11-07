@@ -33,6 +33,8 @@
 <style>
   :root {
     --tint: 255,255,255; --bgrgb: 0,0,0; --sh: rgba(0,0,0,.8);
+    --tile-bg: linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.02)); --tile-line: rgba(255,255,255,.08); --tile-in: rgba(255,255,255,.04); --tile-rim: .14;
+    --tile-sh: none; --tile-sh-hi: 0 24px 50px -24px rgba(0,0,0,.9);
     --bg: #000; --bg1: #141418; --bg2: #0c0c0f; --card: rgba(255,255,255,.035); --card2: rgba(255,255,255,.06);
     --line: rgba(255,255,255,.09); --line2: rgba(255,255,255,.15);
     --fg: #f3f3f6; --muted: #9b9ca8; --dim: #6c6d78;
@@ -41,6 +43,8 @@
   }
   @media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) {
       --tint: 0,0,0; --bgrgb: 255,255,255; --sh: rgba(20,24,31,.16);
+      --tile-bg: linear-gradient(180deg, #ffffff, #fcfcfd); --tile-line: rgba(15,18,28,.07); --tile-in: #f6f6f8; --tile-rim: 0;
+      --tile-sh: 0 1px 2px rgba(15,18,28,.04), 0 10px 30px -18px rgba(15,18,28,.18); --tile-sh-hi: 0 2px 4px rgba(15,18,28,.04), 0 22px 44px -22px rgba(15,18,28,.25);
       --bg: #fff; --bg1: #ffffff; --bg2: #fafafb; --card: rgba(0,0,0,.025); --card2: rgba(0,0,0,.045);
       --line: rgba(0,0,0,.08); --line2: rgba(0,0,0,.13);
       --fg: #111216; --muted: #5d6170; --dim: #8a8d99;
@@ -49,6 +53,8 @@
   /* chosen with the theme switch */
   :root[data-theme="light"] {
       --tint: 0,0,0; --bgrgb: 255,255,255; --sh: rgba(20,24,31,.16);
+      --tile-bg: linear-gradient(180deg, #ffffff, #fcfcfd); --tile-line: rgba(15,18,28,.07); --tile-in: #f6f6f8; --tile-rim: 0;
+      --tile-sh: 0 1px 2px rgba(15,18,28,.04), 0 10px 30px -18px rgba(15,18,28,.18); --tile-sh-hi: 0 2px 4px rgba(15,18,28,.04), 0 22px 44px -22px rgba(15,18,28,.25);
       --bg: #fff; --bg1: #ffffff; --bg2: #fafafb; --card: rgba(0,0,0,.025); --card2: rgba(0,0,0,.045);
       --line: rgba(0,0,0,.08); --line2: rgba(0,0,0,.13);
       --fg: #111216; --muted: #5d6170; --dim: #8a8d99;
@@ -454,37 +460,80 @@
 
   /* bento */
   .bento { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
-  .tile { position: relative; grid-column: span 2; background: linear-gradient(180deg, rgba(var(--tint),.05), rgba(var(--tint),.015)); border: 1px solid var(--line); border-radius: 22px; padding: 26px; overflow: hidden; transition: border-color .3s, transform .4s var(--ease); }
+  .tile { position: relative; grid-column: span 2; display: flex; flex-direction: column; background: var(--tile-bg); border: 1px solid var(--tile-line); border-radius: 22px; padding: 26px 26px 24px; overflow: hidden;
+    box-shadow: var(--tile-sh); transition: border-color .3s, transform .4s var(--ease), box-shadow .4s var(--ease); }
+  .tile::before { content: ""; position: absolute; inset: 0 0 auto; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,var(--tile-rim)), transparent); pointer-events: none; }
   .tile::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .3s;
     background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 0%), rgba(255,59,71,.13), transparent 45%); }
   .tile:hover { border-color: var(--line2); }
+  @media (hover: hover) { .tile:hover { transform: translateY(-3px); box-shadow: var(--tile-sh-hi); } }
   .tile:hover::after { opacity: 1; }
   .tile.w3 { grid-column: span 3; }
   .tile.w4 { grid-column: span 4; }
-  .tile h3 { margin: 0 0 8px; font-size: 20px; letter-spacing: -.01em; }
-  .tile p { margin: 0; color: var(--muted); font-size: 15px; }
-  .ic { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; margin-bottom: 18px; background: rgba(255,59,71,.12); color: var(--red); border: 1px solid rgba(255,59,71,.25); }
-  .ic svg { width: 21px; height: 21px; }
-  .viz { margin-top: 22px; }
-  .bars { display: flex; align-items: flex-end; gap: 6px; height: 74px; }
-  .bars i { flex: 1; border-radius: 6px 6px 2px 2px; background: linear-gradient(180deg, var(--red), rgba(255,59,71,.15)); transform-origin: bottom; transform: scaleY(.1); transition: transform 1s var(--ease); }
-  .in .bars i { transform: scaleY(1); }
+  .tile h3 { margin: 0 0 8px; font-size: 19px; letter-spacing: -.015em; line-height: 1.3; }
+  .tile p { margin: 0; color: var(--muted); font-size: 14.5px; line-height: 1.65; max-width: 560px; }
+  .ic { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; margin-bottom: 18px; color: #fff; flex: none;
+    background: linear-gradient(145deg, #ff5a63, #d3131f); box-shadow: 0 8px 18px -8px rgba(224,30,43,.7), inset 0 1px 0 rgba(255,255,255,.35); }
+  .ic svg { width: 20px; height: 20px; }
+  .viz { margin-top: auto; padding-top: 22px; }
+  /* tile visuals */
+  .mini { display: grid; gap: 8px; }
+  .mini-r { display: flex; align-items: center; gap: 11px; padding: 10px 12px; border-radius: 13px; background: var(--tile-in); border: 1px solid var(--tile-line); font-size: 13.5px;
+    opacity: 0; transform: translateY(8px); transition: opacity .5s, transform .6s var(--ease); }
+  .in .mini-r { opacity: 1; transform: none; } .in .mini-r:nth-child(2) { transition-delay: .1s; } .in .mini-r:nth-child(3) { transition-delay: .2s; }
+  .mini-r .ck { width: 17px; height: 17px; border-radius: 50%; border: 1.5px solid var(--c); flex: none; }
+  .mini-r .bar { width: 3px; align-self: stretch; border-radius: 2px; background: var(--c); flex: none; }
+  .mini-r .tt { min-width: 0; flex: 1; display: flex; flex-direction: column; line-height: 1.35; }
+  .mini-r .tt b { font-weight: 600; color: var(--fg); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mini-r .tt small { color: var(--dim); font-size: 12px; }
+  .mini-r .pc { font-size: 11.5px; font-weight: 600; color: var(--muted); background: rgba(var(--tint),.06); border-radius: 999px; padding: 2px 8px; white-space: nowrap; }
+  .mini-r .cd { font-size: 12px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; padding: 5px 8px; border-radius: 8px; white-space: nowrap; color: var(--muted); background: rgba(var(--tint),.05); }
+  .mini-r .cd.hot { color: #fff; background: linear-gradient(145deg, #ff5a63, #d3131f); }
+  .mini-r .cd.warm { color: #b26a00; background: rgba(255,170,40,.16); }
+  :root:not([data-theme="light"]) .mini-r .cd.warm { color: #ffbe3c; }
+  @media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) .mini-r .cd.warm { color: #b26a00; } }
+  .calc { border-radius: 16px; padding: 14px; background: var(--tile-in); border: 1px solid var(--tile-line); }
+  .calc-t { display: flex; gap: 6px; margin-bottom: 14px; }
+  .calc-t span { flex: 1; text-align: center; font-size: 12.5px; font-weight: 700; padding: 6px 0; border-radius: 9px; color: var(--muted); background: rgba(var(--tint),.05); }
+  .calc-t span.on { color: #fff; background: linear-gradient(145deg, #ff5a63, #d3131f); box-shadow: 0 6px 14px -6px rgba(224,30,43,.7); }
+  .calc-l { font-size: 12.5px; color: var(--muted); }
+  .calc-n { font-size: 38px; font-weight: 800; letter-spacing: -.03em; line-height: 1.1; margin: 2px 0 10px; font-variant-numeric: tabular-nums; }
+  .calc-n small { font-size: 18px; font-weight: 700; color: var(--muted); margin-left: 2px; }
+  .calc-m { height: 6px; border-radius: 3px; background: rgba(var(--tint),.08); overflow: hidden; }
+  .calc-m i { display: block; height: 100%; width: 86%; border-radius: inherit; background: linear-gradient(90deg, #ff8a5c, #e01e2b); transform-origin: left; transform: scaleX(0); transition: transform 1.2s .2s var(--ease); }
+  .in .calc-m i { transform: scaleX(1); }
   .notifs { display: grid; gap: 8px; }
-  .notifs div { display: flex; gap: 10px; align-items: center; background: rgba(var(--tint),.04); border: 1px solid var(--line); border-radius: 12px; padding: 9px 12px; font-size: 13px; opacity: 0; transform: translateX(-12px); transition: opacity .5s, transform .5s var(--ease); }
-  .notifs div b { color: var(--fg); }
-  .notifs div span { color: var(--muted); }
-  .notifs div i { width: 8px; height: 8px; border-radius: 50%; flex: none; }
-  .in .notifs div { opacity: 1; transform: none; }
-  .in .notifs div:nth-child(2) { transition-delay: .15s; }
-  .in .notifs div:nth-child(3) { transition-delay: .3s; }
+  .notifs > div { display: flex; gap: 11px; align-items: center; background: var(--tile-in); border: 1px solid var(--tile-line); border-radius: 14px; padding: 9px 12px; font-size: 13px;
+    box-shadow: 0 6px 16px -12px rgba(0,0,0,.35); opacity: 0; transform: translateX(-12px); transition: opacity .5s, transform .5s var(--ease); }
+  .notifs .app { width: 26px; height: 26px; border-radius: 7px; flex: none; display: grid; place-items: center; background: #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.06); }
+  .notifs .app svg { width: 17px; height: 17px; }
+  .notifs .tt { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.35; }
+  .notifs .tt b { color: var(--fg); font-weight: 600; display: flex; align-items: center; gap: 6px; }
+  .notifs .tt b i { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+  .notifs .tt > span { color: var(--muted); font-size: 12.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .notifs time { font-size: 11.5px; color: var(--dim); white-space: nowrap; align-self: flex-start; margin-top: 2px; }
+  .in .notifs > div { opacity: 1; transform: none; }
+  .in .notifs > div:nth-child(2) { transition-delay: .15s; }
+  .in .notifs > div:nth-child(3) { transition-delay: .3s; }
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chips > span { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; color: var(--fg); padding: 7px 12px 7px 10px; border-radius: 999px; background: var(--tile-in); border: 1px solid var(--tile-line); }
+  .chips svg { width: 15px; height: 15px; color: var(--red); flex: none; }
   .files { display: flex; gap: 10px; align-items: center; }
-  .files .f { width: 40px; height: 50px; border-radius: 6px; background: rgba(var(--tint),.06); border: 1px solid var(--line2); display: grid; place-items: end center; font: 700 9px/1 ui-monospace, monospace; color: var(--muted); padding-bottom: 6px; }
-  .files .arr { color: var(--red); font-size: 20px; }
-  .files .zip { width: 52px; height: 60px; border-radius: 8px; background: linear-gradient(135deg, #ff4552, #c3121d); display: grid; place-items: center; font: 800 11px/1 ui-monospace, monospace; color: #fff; box-shadow: 0 10px 24px -6px var(--redglow); }
+  .files .f { position: relative; width: 40px; height: 50px; border-radius: 6px 12px 6px 6px; background: var(--tile-in); border: 1px solid var(--line2); display: grid; place-items: end center; padding-bottom: 7px; }
+  .files .f::before { content: ""; position: absolute; top: -1px; right: -1px; width: 12px; height: 12px; border-radius: 0 12px 0 4px; background: rgba(var(--tint),.08); border-left: 1px solid var(--line2); border-bottom: 1px solid var(--line2); }
+  .files .f b { font: 800 8.5px/1 ui-monospace, monospace; color: #fff; background: var(--c); border-radius: 3px; padding: 3px 4px; }
+  .files .arr { color: var(--red); width: 22px; height: 22px; }
+  .files .zip { width: 54px; height: 62px; border-radius: 10px; background: linear-gradient(145deg, #ff5a63, #c3121d); display: grid; place-items: center; font: 800 11px/1 ui-monospace, monospace; color: #fff;
+    box-shadow: 0 12px 24px -8px var(--redglow), inset 0 1px 0 rgba(255,255,255,.35); }
   .themes { display: flex; gap: 10px; }
-  .themes i { flex: 1; height: 60px; border-radius: 12px; border: 1px solid var(--line2); }
-  .kbd { display: inline-flex; gap: 6px; margin-top: 18px; }
-  .kbd kbd { font: 700 13px/1 inherit; background: rgba(var(--tint),.06); border: 1px solid var(--line2); border-bottom-width: 3px; border-radius: 8px; padding: 8px 11px; color: var(--fg); }
+  .themes i { position: relative; flex: 1; height: 62px; border-radius: 12px; border: 1px solid var(--line2); overflow: hidden; }
+  .themes i::before, .themes i::after { content: ""; position: absolute; left: 10px; height: 6px; border-radius: 3px; background: currentColor; opacity: .35; }
+  .themes i::before { top: 12px; width: 45%; } .themes i::after { top: 24px; width: 65%; opacity: .2; }
+  .themes i b { position: absolute; left: 10px; right: 10px; bottom: 9px; height: 16px; border-radius: 5px; background: var(--c); opacity: .9; }
+  .kbd { display: inline-flex; gap: 6px; }
+  .kbd kbd { font: 600 15px/1 inherit; min-width: 40px; text-align: center; background: var(--tile-in); border: 1px solid var(--line2); border-bottom-width: 3px; border-radius: 10px; padding: 10px 12px; color: var(--fg); }
+  .kbd-s { display: flex; align-items: center; gap: 10px; }
+  .kbd-s > span { font-size: 13px; color: var(--muted); }
 
 
 
@@ -918,34 +967,36 @@
     <div class="tile w4 rv"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
       <h3><span class="en">Every deadline, one list</span><span class="zh">所有作业，一个列表</span></h3>
       <p><span class="en">Assignments, quizzes and discussions from all your courses, sorted by due date with a live countdown and how much of your grade each is worth. Tick them off (synced with Canvas To Do), get reminders, export to Google / Apple Calendar, or see the month at a glance.</span><span class="zh">所有课程的作业、测验和讨论按截止时间排好，实时倒计时，标出每项占总成绩多少。打勾完成（和 Canvas 待办同步）、截止提醒、导出到 Google / Apple 日历，还有月历视图。</span></p>
-      <div class="viz"><div class="bars"><i style="height:30%;transition-delay:0.00s"></i><i style="height:55%;transition-delay:0.06s"></i><i style="height:40%;transition-delay:0.12s"></i><i style="height:90%;transition-delay:0.18s"></i><i style="height:70%;transition-delay:0.24s"></i><i style="height:35%;transition-delay:0.30s"></i><i style="height:20%;transition-delay:0.36s"></i><i style="height:45%;transition-delay:0.42s"></i><i style="height:80%;transition-delay:0.48s"></i><i style="height:60%;transition-delay:0.54s"></i><i style="height:25%;transition-delay:0.60s"></i><i style="height:50%;transition-delay:0.66s"></i><i style="height:95%;transition-delay:0.72s"></i><i style="height:40%;transition-delay:0.78s"></i></div></div></div>
+      <div class="viz mini"><div class="mini-r" style="--c:#bb0000"><i class="ck"></i><span class="tt"><b>Project 3</b><small>CSE 2231</small></span><span class="pc"><span class="en">8% of grade</span><span class="zh">占 8%</span></span><span class="cd hot">05:42:10</span></div><div class="mini-r" style="--c:#0c7bbd"><i class="ck"></i><span class="tt"><b>Quiz 7</b><small>MATH 2568</small></span><span class="pc"><span class="en">3% of grade</span><span class="zh">占 3%</span></span><span class="cd warm"><span class="en">1d 4h</span><span class="zh">1 天 4 小时</span></span></div><div class="mini-r" style="--c:#6d4fc2"><i class="ck"></i><span class="tt"><b>Sprint 3 review</b><small>CSE 3902</small></span><span class="pc"><span class="en">12% of grade</span><span class="zh">占 12%</span></span><span class="cd "><span class="en">3d</span><span class="zh">3 天</span></span></div></div></div>
     <div class="tile w2 rv d1"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 11h2M12 11h2M16 11h0M8 15h2M12 15h2M8 18h2M12 18h2M16 15v3"/></svg></div>
       <h3><span class="en">What do I need on the final?</span><span class="zh">期末要考多少？</span></h3>
-      <p><span class="en">Pick a target grade, get the exact score. No weights in Canvas? It reads them from the syllabus. Plus term and cumulative GPA.</span><span class="zh">选个目标成绩，直接算出期末要考几分。Canvas 没设权重？从 syllabus 里读。还有学期和累计 GPA。</span></p></div>
+      <p><span class="en">Pick a target grade, get the exact score. No weights in Canvas? It reads them from the syllabus. Plus term and cumulative GPA.</span><span class="zh">选个目标成绩，直接算出期末要考几分。Canvas 没设权重？从 syllabus 里读。还有学期和累计 GPA。</span></p>
+      <div class="viz"><div class="calc"><div class="calc-t"><span class="on">A</span><span>A-</span><span>B+</span></div>
+        <div class="calc-l"><span class="en">On the final you need at least</span><span class="zh">期末至少要考</span></div><div class="calc-n">86.4<small>%</small></div><div class="calc-m"><i></i></div></div></div></div>
     <div class="tile w3 rv"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></div>
       <h3><span class="en">Know the moment it changes</span><span class="zh">有变化，马上知道</span></h3>
       <p><span class="en">A notification when a grade is posted, your course total moves, an instructor posts an announcement, or a deadline is moved.</span><span class="zh">出分、总成绩变化、老师发公告、截止时间被改，第一时间弹出通知。</span></p>
       <div class="viz notifs">
-        <div><i style="background:#3ddc84"></i><b><span class="en">Grade posted</span><span class="zh">出分了</span></b><span>CSE 2231 · Project 2</span></div>
-        <div><i style="background:#ffbe3c"></i><b><span class="en">Due date moved</span><span class="zh">截止时间变了</span></b><span>MATH 2568 · HW 6</span></div>
-        <div><i style="background:#5aa9ff"></i><b><span class="en">Announcement</span><span class="zh">新公告</span></b><span>CSE 3902 · Sprint 3</span></div>
+        <div><span class="app"><svg viewBox="18 5.5 160 160" aria-hidden="true"><g fill="#BB0000"><path d="M95.5 36A4.5 4.5 0 0 1 100 40.5V55.5A4.5 4.5 0 0 1 95.5 60H61A9 9 0 0 0 52 69V120A9 9 0 0 0 61 129H116A9 9 0 0 0 125 120V104.5A4.5 4.5 0 0 1 129.5 100H144.5A4.5 4.5 0 0 1 149 104.5V123A30 30 0 0 1 119 153H58A30 30 0 0 1 28 123V66A30 30 0 0 1 58 36Z"/><rect x="107" y="36" width="61" height="24" rx="4.5"/><rect x="125" y="18" width="24" height="61" rx="4.5"/></g></svg></span><span class="tt"><b><i style="background:#3ddc84"></i><span class="en">Grade posted</span><span class="zh">出分了</span></b><span>CSE 2231 · Project 2</span></span><time><span class="en">now</span><span class="zh">刚刚</span></time></div>
+        <div><span class="app"><svg viewBox="18 5.5 160 160" aria-hidden="true"><g fill="#BB0000"><path d="M95.5 36A4.5 4.5 0 0 1 100 40.5V55.5A4.5 4.5 0 0 1 95.5 60H61A9 9 0 0 0 52 69V120A9 9 0 0 0 61 129H116A9 9 0 0 0 125 120V104.5A4.5 4.5 0 0 1 129.5 100H144.5A4.5 4.5 0 0 1 149 104.5V123A30 30 0 0 1 119 153H58A30 30 0 0 1 28 123V66A30 30 0 0 1 58 36Z"/><rect x="107" y="36" width="61" height="24" rx="4.5"/><rect x="125" y="18" width="24" height="61" rx="4.5"/></g></svg></span><span class="tt"><b><i style="background:#ffbe3c"></i><span class="en">Due date moved</span><span class="zh">截止时间变了</span></b><span>MATH 2568 · HW 6</span></span><time><span class="en">2m</span><span class="zh">2 分钟前</span></time></div>
+        <div><span class="app"><svg viewBox="18 5.5 160 160" aria-hidden="true"><g fill="#BB0000"><path d="M95.5 36A4.5 4.5 0 0 1 100 40.5V55.5A4.5 4.5 0 0 1 95.5 60H61A9 9 0 0 0 52 69V120A9 9 0 0 0 61 129H116A9 9 0 0 0 125 120V104.5A4.5 4.5 0 0 1 129.5 100H144.5A4.5 4.5 0 0 1 149 104.5V123A30 30 0 0 1 119 153H58A30 30 0 0 1 28 123V66A30 30 0 0 1 58 36Z"/><rect x="107" y="36" width="61" height="24" rx="4.5"/><rect x="125" y="18" width="24" height="61" rx="4.5"/></g></svg></span><span class="tt"><b><i style="background:#5aa9ff"></i><span class="en">Announcement</span><span class="zh">新公告</span></b><span>CSE 3902 · Sprint 3</span></span><time><span class="en">1h</span><span class="zh">1 小时前</span></time></div>
       </div></div>
     <div class="tile w3 rv d1"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 3.5l1.9 5.1 5.1 1.9-5.1 1.9L11 17.5l-1.9-5.1L4 10.5l5.1-1.9z"/><path d="M19 3v4M17 5h4"/></svg></div>
       <h3>Canvas+ AI</h3>
       <p><span class="en">Step-by-step assignment guides, syllabus summaries, course Q&amp;A with quotes, exam review packs, a mistake book, a weekly digest, e-mails to your professor — and lecture notes with timestamps for Zoom recordings. Teaches the process, never hands you answers.</span><span class="zh">作业一步步拆解、Syllabus 总结、附原文的课程问答、考前复习包、错题本、每周简报、给教授写邮件，还有带时间戳的 Zoom 录播课堂笔记。只教方法，不给答案。</span></p>
-      <div class="viz" style="display:flex;gap:8px;flex-wrap:wrap"><span class="soon" style="background:rgba(255,255,255,.06);color:var(--fg);font-size:12.5px;padding:5px 11px"><span class="en">Assignments</span><span class="zh">作业</span></span><span class="soon" style="background:rgba(255,255,255,.06);color:var(--fg);font-size:12.5px;padding:5px 11px"><span class="en">Syllabus</span><span class="zh">Syllabus</span></span><span class="soon" style="background:rgba(255,255,255,.06);color:var(--fg);font-size:12.5px;padding:5px 11px"><span class="en">Q&amp;A</span><span class="zh">问答</span></span><span class="soon" style="background:rgba(255,255,255,.06);color:var(--fg);font-size:12.5px;padding:5px 11px"><span class="en">Exams</span><span class="zh">考试</span></span><span class="soon" style="background:rgba(255,255,255,.06);color:var(--fg);font-size:12.5px;padding:5px 11px"><span class="en">Zoom</span><span class="zh">Zoom</span></span><span class="soon" style="background:rgba(255,255,255,.06);color:var(--fg);font-size:12.5px;padding:5px 11px"><span class="en">E-mail</span><span class="zh">邮件</span></span></div></div>
+      <div class="viz chips"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 3.5l1.9 5.1 5.1 1.9-5.1 1.9L11 17.5l-1.9-5.1L4 10.5l5.1-1.9z"/></svg><span class="en">Assignments</span><span class="zh">作业拆解</span></span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/></svg><span class="en">Syllabus</span><span class="zh">Syllabus</span></span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg><span class="en">Q&amp;A</span><span class="zh">课程问答</span></span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="14" height="14" rx="2"/><path d="M7 3h12a2 2 0 0 1 2 2v12"/></svg><span class="en">Review packs</span><span class="zh">复习包</span></span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="m16 10 6-3v10l-6-3"/></svg><span class="en">Zoom notes</span><span class="zh">Zoom 笔记</span></span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg><span class="en">E-mail</span><span class="zh">写邮件</span></span></div></div>
     <div class="tile w2 rv"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8v13H3V8M1 3h22v5H1zM10 12h4"/></svg></div>
       <h3><span class="en">Course files → one .zip</span><span class="zh">课件一键打包</span></h3>
       <p><span class="en">Every file in a course, one folder per module, packed right in your browser.</span><span class="zh">整门课的所有文件，按单元分好文件夹，直接在浏览器里打包。</span></p>
-      <div class="viz files"><span class="f">PDF</span><span class="f">PPT</span><span class="f">DOC</span><span class="arr">→</span><span class="zip">.ZIP</span></div></div>
+      <div class="viz files"><span class="f" style="--c:#e5484d"><b>PDF</b></span><span class="f" style="--c:#f76b15"><b>PPT</b></span><span class="f" style="--c:#2f7de1"><b>DOC</b></span><svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span class="zip">.ZIP</span></div></div>
     <div class="tile w2 rv d1"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r="1.5"/><circle cx="17.5" cy="10.5" r="1.5"/><circle cx="8.5" cy="7.5" r="1.5"/><circle cx="6.5" cy="12.5" r="1.5"/><path d="M12 2a10 10 0 1 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.4A5.6 5.6 0 0 0 22 10c0-4.4-4.5-8-10-8z"/></svg></div>
       <h3><span class="en">Make Canvas yours</span><span class="zh">界面随你定制</span></h3>
       <p><span class="en">Real dark mode, your own background photo, course colours — and hide every menu item you never use.</span><span class="zh">真正的暗色模式、自定义背景图、课程配色，还能隐藏任何用不到的菜单项。</span></p>
-      <div class="viz themes"><i style="background:linear-gradient(135deg,#17191e,#2a2d35)"></i><i style="background:linear-gradient(135deg,#f9d5e5,#c6e2ff)"></i><i style="background:linear-gradient(135deg,#1d4e89,#5a189a)"></i></div></div>
+      <div class="viz themes"><i style="background:linear-gradient(135deg,#17191e,#2a2d35);color:#fff;--c:#bb0000"><b></b></i><i style="background:linear-gradient(135deg,#fde4ee,#d6e9ff);color:#1d2330;--c:#f2a5b8"><b></b></i><i style="background:linear-gradient(135deg,#1d4e89,#5a189a);color:#fff;--c:#14b2d8"><b></b></i></div></div>
     <div class="tile w2 rv d2"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></div>
       <h3><span class="en">Find anything instantly</span><span class="zh">秒找任何东西</span></h3>
       <p><span class="en">Courses, assignments, grades and pages — from anywhere in Canvas.</span><span class="zh">课程、作业、成绩、页面，在 Canvas 任何地方都能搜。</span></p>
-      <div class="kbd"><kbd>⌘</kbd><kbd>K</kbd></div></div>
+      <div class="viz kbd-s"><div class="kbd"><kbd>⌘</kbd><kbd>K</kbd></div><span><span class="en">or Ctrl + K</span><span class="zh">或 Ctrl + K</span></span></div></div>
   </div>
 </section>
 <section class="sec wrap" id="ai">
