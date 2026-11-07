@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
-  <url><loc>https://getcanvasplus.com/</loc><lastmod>2026-10-17</lastmod><priority>1.0</priority>
+  <url><loc>https://getcanvasplus.com/</loc><lastmod>2026-11-07</lastmod><priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://getcanvasplus.com/"/>
     <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://getcanvasplus.com/zh/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://getcanvasplus.com/"/>
@@ -11,7 +11,7 @@
     <image:image><image:loc>https://getcanvasplus.com/shot-mistakes.png</image:loc></image:image>
     <image:image><image:loc>https://getcanvasplus.com/shot-digest.png</image:loc></image:image>
     <image:image><image:loc>https://getcanvasplus.com/shot-email.png</image:loc></image:image></url>
-  <url><loc>https://getcanvasplus.com/zh/</loc><lastmod>2026-10-17</lastmod><priority>0.9</priority>
+  <url><loc>https://getcanvasplus.com/zh/</loc><lastmod>2026-11-07</lastmod><priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://getcanvasplus.com/"/>
     <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://getcanvasplus.com/zh/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://getcanvasplus.com/"/>
@@ -22,22 +22,70 @@
     <image:image><image:loc>https://getcanvasplus.com/shot-mistakes-zh.png</image:loc></image:image>
     <image:image><image:loc>https://getcanvasplus.com/shot-digest-zh.png</image:loc></image:image>
     <image:image><image:loc>https://getcanvasplus.com/shot-email-zh.png</image:loc></image:image></url>
-  <url><loc>https://getcanvasplus.com/canvas-final-grade-calculator/</loc><lastmod>2026-10-17</lastmod><priority>0.8</priority>
+  <url><loc>https://getcanvasplus.com/canvas-final-grade-calculator/</loc><lastmod>2026-11-07</lastmod><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://getcanvasplus.com/canvas-final-grade-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://getcanvasplus.com/zh/canvas-final-grade-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getcanvasplus.com/canvas-final-grade-calculator/"/>
     <image:image><image:loc>https://getcanvasplus.com/img/final-grade-calculator.webp</image:loc></image:image></url>
-  <url><loc>https://getcanvasplus.com/canvas-gpa-calculator/</loc><lastmod>2026-10-17</lastmod><priority>0.8</priority>
+  <url><loc>https://getcanvasplus.com/zh/canvas-final-grade-calculator/</loc><lastmod>2026-11-07</lastmod><priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://getcanvasplus.com/canvas-final-grade-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://getcanvasplus.com/zh/canvas-final-grade-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getcanvasplus.com/canvas-final-grade-calculator/"/>
+    <image:image><image:loc>https://getcanvasplus.com/img/final-grade-calculator.webp</image:loc></image:image></url>
+  <url><loc>https://getcanvasplus.com/canvas-gpa-calculator/</loc><lastmod>2026-11-07</lastmod><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://getcanvasplus.com/canvas-gpa-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://getcanvasplus.com/zh/canvas-gpa-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getcanvasplus.com/canvas-gpa-calculator/"/>
     <image:image><image:loc>https://getcanvasplus.com/img/gpa-calculator.webp</image:loc></image:image></url>
-  <url><loc>https://getcanvasplus.com/canvas-dark-mode/</loc><lastmod>2026-10-17</lastmod><priority>0.8</priority></url>
-  <url><loc>https://getcanvasplus.com/download-all-canvas-files/</loc><lastmod>2026-10-17</lastmod><priority>0.8</priority></url>
-  <url><loc>https://getcanvasplus.com/canvas-assignment-reminders/</loc><lastmod>2026-10-17</lastmod><priority>0.8</priority>
+  <url><loc>https://getcanvasplus.com/zh/canvas-gpa-calculator/</loc><lastmod>2026-11-07</lastmod><priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://getcanvasplus.com/canvas-gpa-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://getcanvasplus.com/zh/canvas-gpa-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getcanvasplus.com/canvas-gpa-calculator/"/>
+    <image:image><image:loc>https://getcanvasplus.com/img/gpa-calculator.webp</image:loc></image:image></url>
+  <url><loc>https://getcanvasplus.com/canvas-dark-mode/</loc><lastmod>2026-11-07</lastmod><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://getcanvasplus.com/canvas-dark-mode/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://getcanvasplus.com/zh/canvas-dark-mode/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getcanvasplus.com/canvas-dark-mode/"/></url>
+  <url><loc>https://getcanvasplus.com/zh/canvas-dark-mode/</loc><lastmod>2026-11-07</lastmod><priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://getcanvasplus.com/canvas-dark-mode/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://getcanvasplus.com/zh/canvas-dark-mode/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getcanvasplus.com/canvas-dark-mode/"/></url>
+  <url><loc>https://getcanvasplus.com/download-all-canvas-files/</loc><lastmod>2026-11-07</lastmod><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://getcanvasplus.com/download-all-canvas-files/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://getcanvasplus.com/zh/download-all-canvas-files/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getcanvasplus.com/download-all-canvas-files/"/></url>
+  <url><loc>https://getcanvasplus.com/zh/download-all-canvas-files/</loc><lastmod>2026-11-07</lastmod><priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://getcanvasplus.com/download-all-canvas-files/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://getcanvasplus.com/zh/download-all-canvas-files/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getcanvasplus.com/download-all-canvas-files/"/></url>
+  <url><loc>https://getcanvasplus.com/canvas-assignment-reminders/</loc><lastmod>2026-11-07</lastmod><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://getcanvasplus.com/canvas-assignment-reminders/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://getcanvasplus.com/zh/canvas-assignment-reminders/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getcanvasplus.com/canvas-assignment-reminders/"/>
     <image:image><image:loc>https://getcanvasplus.com/img/assignment-reminders.webp</image:loc></image:image></url>
-  <url><loc>https://getcanvasplus.com/carmen-canvas-extension/</loc><lastmod>2026-10-17</lastmod><priority>0.8</priority>
+  <url><loc>https://getcanvasplus.com/zh/canvas-assignment-reminders/</loc><lastmod>2026-11-07</lastmod><priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://getcanvasplus.com/canvas-assignment-reminders/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://getcanvasplus.com/zh/canvas-assignment-reminders/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getcanvasplus.com/canvas-assignment-reminders/"/>
     <image:image><image:loc>https://getcanvasplus.com/img/assignment-reminders.webp</image:loc></image:image></url>
-  <url><loc>https://getcanvasplus.com/privacy.html</loc><lastmod>2026-10-17</lastmod><priority>0.3</priority></url>
-  <url><loc>https://getcanvasplus.com/privacy-zh.html</loc><lastmod>2026-10-17</lastmod><priority>0.3</priority></url>
+  <url><loc>https://getcanvasplus.com/carmen-canvas-extension/</loc><lastmod>2026-11-07</lastmod><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://getcanvasplus.com/carmen-canvas-extension/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://getcanvasplus.com/zh/carmen-canvas-extension/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getcanvasplus.com/carmen-canvas-extension/"/>
+    <image:image><image:loc>https://getcanvasplus.com/img/assignment-reminders.webp</image:loc></image:image></url>
+  <url><loc>https://getcanvasplus.com/zh/carmen-canvas-extension/</loc><lastmod>2026-11-07</lastmod><priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://getcanvasplus.com/carmen-canvas-extension/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://getcanvasplus.com/zh/carmen-canvas-extension/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getcanvasplus.com/carmen-canvas-extension/"/>
+    <image:image><image:loc>https://getcanvasplus.com/img/assignment-reminders.webp</image:loc></image:image></url>
   <url><loc>https://getcanvasplus.com/changelog/</loc><lastmod>2026-11-07</lastmod><priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://getcanvasplus.com/changelog/"/>
-    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://getcanvasplus.com/zh/changelog/"/></url>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://getcanvasplus.com/zh/changelog/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getcanvasplus.com/changelog/"/></url>
   <url><loc>https://getcanvasplus.com/zh/changelog/</loc><lastmod>2026-11-07</lastmod><priority>0.5</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://getcanvasplus.com/changelog/"/>
-    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://getcanvasplus.com/zh/changelog/"/></url>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://getcanvasplus.com/zh/changelog/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getcanvasplus.com/changelog/"/></url>
+  <url><loc>https://getcanvasplus.com/privacy.html</loc><lastmod>2026-11-07</lastmod><priority>0.3</priority></url>
+  <url><loc>https://getcanvasplus.com/privacy-zh.html</loc><lastmod>2026-11-07</lastmod><priority>0.3</priority></url>
 </urlset>

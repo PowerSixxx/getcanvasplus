@@ -43,8 +43,36 @@
     var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); }, { threshold: .12, rootMargin: '0px 0px -40px 0px' });
     $$('.rv').forEach(function (el) { io.observe(el); });
   } else $$('.rv').forEach(function (el) { el.classList.add('in'); });
-  $$('.tile').forEach(function (el) {
-    el.addEventListener('pointermove', function (e) { var r = el.getBoundingClientRect(); el.style.setProperty('--mx', (e.clientX - r.left) + 'px'); el.style.setProperty('--my', (e.clientY - r.top) + 'px'); });
+  // Feature cards: the glow follows the cursor, and the card under it tilts toward it a little (at most 4°), then eases back.
+  // The cursor is tracked on the grid (which never moves) against each card's untilted box, so a tilted edge
+  // sliding out from under the cursor can't make the card flicker.
+  var canTilt = !reduce && window.matchMedia && matchMedia('(hover: hover) and (pointer: fine)').matches, MAX = 4;
+  $$('.bento').forEach(function (grid) {
+    var tiles = $$('.tile', grid), cur = null, raf = 0;
+    function rest(el) {
+      el.style.transition = 'transform .7s cubic-bezier(.2,.8,.2,1), box-shadow .4s, border-color .3s';
+      el.style.transform = ''; el.classList.remove('tilt');
+      setTimeout(function () { if (el !== cur) el.style.transition = ''; }, 750);
+    }
+    grid.addEventListener('pointermove', function (e) {
+      var g = grid.getBoundingClientRect(), px = e.clientX - g.left, py = e.clientY - g.top, hit = null;
+      tiles.forEach(function (t) { if (px >= t.offsetLeft && px <= t.offsetLeft + t.offsetWidth && py >= t.offsetTop && py <= t.offsetTop + t.offsetHeight) hit = t; });
+      if (cur && cur !== hit) rest(cur);
+      cur = hit;
+      if (!hit) return;
+      var x = px - hit.offsetLeft, y = py - hit.offsetTop;
+      hit.style.setProperty('--mx', x + 'px'); hit.style.setProperty('--my', y + 'px');
+      if (!canTilt || e.pointerType !== 'mouse') return;
+      var ry = (x / hit.offsetWidth - .5) * 2 * MAX, rx = -(y / hit.offsetHeight - .5) * 2 * MAX;
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(function () {
+        if (cur !== hit) return;
+        hit.classList.add('tilt');
+        hit.style.transition = 'transform .15s ease-out, box-shadow .4s, border-color .3s';
+        hit.style.transform = 'perspective(1000px) rotateX(' + rx.toFixed(2) + 'deg) rotateY(' + ry.toFixed(2) + 'deg) translateY(-3px)';
+      });
+    });
+    grid.addEventListener('pointerleave', function () { cancelAnimationFrame(raf); if (cur) rest(cur); cur = null; });
   });
 
   // ---- live panel demo: a copy of the real Canvas+ panel ----

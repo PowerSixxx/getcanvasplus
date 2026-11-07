@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<script>try{var t=localStorage.getItem("cp-theme");if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t}}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Canvas GPA 计算器 — 从 Canvas 算出学期和累计 GPA | Canvas+</title>
+<meta name="description" content="免费的 Canvas GPA 计算器：根据 Canvas 里已有的成绩，算出你的累计 GPA 和本学期预估。">
+<link rel="canonical" href="https://getcanvasplus.com/zh/canvas-gpa-calculator/">
+<link rel="alternate" hreflang="en" href="https://getcanvasplus.com/canvas-gpa-calculator/">
+<link rel="alternate" hreflang="zh-Hans" href="https://getcanvasplus.com/zh/canvas-gpa-calculator/">
+<link rel="alternate" hreflang="x-default" href="https://getcanvasplus.com/canvas-gpa-calculator/">
+<link rel="icon" href="/icon128.png">
+<meta name="color-scheme" content="light dark">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Canvas+ (Canvas Plus)">
+<meta property="og:title" content="Canvas GPA 计算器 — 从 Canvas 算出学期和累计 GPA | Canvas+">
+<meta property="og:description" content="免费的 Canvas GPA 计算器：根据 Canvas 里已有的成绩，算出你的累计 GPA 和本学期预估。">
+<meta property="og:url" content="https://getcanvasplus.com/zh/canvas-gpa-calculator/">
+<meta property="og:image" content="https://getcanvasplus.com/img/gpa-calculator.webp">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/pages.css?v=2">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebPage", "name": "Canvas GPA 计算器 — 从 Canvas 算出学期和累计 GPA | Canvas+", "url": "https://getcanvasplus.com/zh/canvas-gpa-calculator/", "description": "免费的 Canvas GPA 计算器：根据 Canvas 里已有的成绩，算出你的累计 GPA 和本学期预估。", "inLanguage": "zh-Hans", "isPartOf": {"@type": "WebSite", "name": "Canvas+", "url": "https://getcanvasplus.com/"}, "about": {"@type": "SoftwareApplication", "name": "Canvas+", "alternateName": ["Canvas Plus", "CanvasPlus"], "applicationCategory": "EducationalApplication", "operatingSystem": "Chrome", "downloadUrl": "https://chromewebstore.google.com/detail/enihdeipikgagnnkpnanlhfechaflmif", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}}, {"@type": "HowTo", "name": "Canvas GPA 计算器：GPA 直接从 Canvas 算出来。", "step": [{"@type": "HowToStep", "position": 1, "name": "把 Canvas+ 添加到 Chrome", "text": "免费，直接在 Canvas 页面上运行。"}, {"@type": "HowToStep", "position": 2, "name": "打开「期末计算器」", "text": "点 Canvas 右侧边缘的 Canvas+ 小标签（或按 ⌘K / Ctrl+K），累计 GPA 就在最上面。"}, {"@type": "HowToStep", "position": 3, "name": "核对学分，试试“如果”", "text": "打开「课程与学分」确认每门课的学分，再给课程选不同等级，看本学期会怎样影响 GPA。"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "这是我的官方 GPA 吗？", "acceptedAnswer": {"@type": "Answer", "text": "不是，这是根据 Canvas 里的成绩做的估算。官方 GPA 以成绩单为准。"}}, {"@type": "Question", "name": "任何学校都能用吗？", "acceptedAnswer": {"@type": "Answer", "text": "只要学校用 Canvas 就能用。学校的等级标准不一样的话，可以自己设置。"}}, {"@type": "Question", "name": "免费吗？", "acceptedAnswer": {"@type": "Answer", "text": "免费，GPA 计算器属于免费版功能。"}}]}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Canvas+", "item": "https://getcanvasplus.com/zh/"}, {"@type": "ListItem", "position": 2, "name": "GPA 计算器", "item": "https://getcanvasplus.com/zh/canvas-gpa-calculator/"}]}]}</script>
+</head>
+<body>
+<header class="nav" id="nav"><div class="wrap">
+  <a class="brand" href="/zh/"><svg viewBox="18 5.5 160 160" aria-hidden="true"><g fill="#BB0000"><path d="M95.5 36A4.5 4.5 0 0 1 100 40.5V55.5A4.5 4.5 0 0 1 95.5 60H61A9 9 0 0 0 52 69V120A9 9 0 0 0 61 129H116A9 9 0 0 0 125 120V104.5A4.5 4.5 0 0 1 129.5 100H144.5A4.5 4.5 0 0 1 149 104.5V123A30 30 0 0 1 119 153H58A30 30 0 0 1 28 123V66A30 30 0 0 1 58 36Z"/><rect x="107" y="36" width="61" height="24" rx="4.5"/><rect x="125" y="18" width="24" height="61" rx="4.5"/></g></svg><span>Canvas<b>+</b></span></a>
+  <nav aria-label="Main"><a href="/zh/#features">功能</a><a href="/zh/#ai">Canvas+ AI</a><a href="/zh/#mac">Mac 版</a><a href="/zh/#compare">对比</a><a href="/zh/#pricing">价格</a><a href="/zh/#faq">FAQ</a></nav>
+  <div class="nav-r"><button class="lang theme" id="theme" type="button" data-mode="auto" aria-label="Theme"><svg class="t-auto" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3.5a8.5 8.5 0 0 1 0 17z" fill="currentColor"/></svg><svg class="t-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="t-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg></button><a class="lang" id="lang" data-to="en" href="/canvas-gpa-calculator/" hreflang="en" lang="en">English</a><a class="btn sm" href="https://chromewebstore.google.com/detail/enihdeipikgagnnkpnanlhfechaflmif">添加到 Chrome</a></div>
+</div></header>
+<main>
+<section class="wrap hero">
+  <div>
+    <span class="eyebrow">Canvas GPA 计算器</span>
+    <h1>Canvas GPA 计算器：GPA 直接从 Canvas 算出来。</h1>
+    <p class="lead">Canvas+ 读取你在 Canvas 里的最终成绩和当前成绩，算出累计 GPA 和本学期结束后的预估——不用做表格，也不用一门门手动输入。</p>
+    <a class="btn" href="https://chromewebstore.google.com/detail/enihdeipikgagnnkpnanlhfechaflmif"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>免费添加到 Chrome</a>
+    <p class="note">免费 · 支持 Chrome 和 Edge · 任何用 Canvas 的学校都能用</p>
+  </div>
+  <div class="shot"><img src="/img/gpa-calculator.webp" alt="Canvas 里的 Canvas+ GPA 计算器：累计 GPA 3.62，每门课一张卡片" width="560" height="880" fetchpriority="high"></div>
+</section>
+<section class="wrap blk">
+  <h2>怎么用</h2>
+  <ol class="steps"><li><h3>把 Canvas+ 添加到 Chrome</h3><p>免费，直接在 Canvas 页面上运行。</p></li><li><h3>打开「期末计算器」</h3><p>点 Canvas 右侧边缘的 Canvas+ 小标签（或按 ⌘K / Ctrl+K），累计 GPA 就在最上面。</p></li><li><h3>核对学分，试试“如果”</h3><p>打开「课程与学分」确认每门课的学分，再给课程选不同等级，看本学期会怎样影响 GPA。</p></li></ol>
+</section>
+<section class="wrap blk">
+  <h2>有什么用</h2>
+  <div class="pts"><div><h3>累计 + 本学期</h3><p>根据已结束学期估算累计 GPA，再预估本学期结束后的结果。计算代码<a href="https://github.com/getcanvasplus/canvas-grades">在 GitHub 开源</a>。</p></div><div><h3>期末前算“如果”</h3><p>每门课先按当前成绩对应的等级计算，选一个不同的等级就能看到影响。</p></div><div><h3>按你学校的标准</h3><p>等级来自每门课在 Canvas 里的评分标准，也可以用你自己设的标准。</p></div><div><h3>P/F 课程也处理好了</h3><p>S / U 课程计入学分，但不计入 GPA。</p></div></div>
+</section>
+<section class="wrap blk faq">
+  <h2>常见问题</h2>
+  <details><summary>这是我的官方 GPA 吗？</summary><p>不是，这是根据 Canvas 里的成绩做的估算。官方 GPA 以成绩单为准。</p></details><details><summary>任何学校都能用吗？</summary><p>只要学校用 Canvas 就能用。学校的等级标准不一样的话，可以自己设置。</p></details><details><summary>免费吗？</summary><p>免费，GPA 计算器属于免费版功能。</p></details>
+</section>
+<section class="wrap cta">
+  <h2>在你自己的 Canvas 上试试。</h2>
+  <p>免费。用 Google 或邮箱验证码登录，不用密码。你的成绩不会离开你的浏览器。</p>
+  <a class="btn" href="https://chromewebstore.google.com/detail/enihdeipikgagnnkpnanlhfechaflmif"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>把 Canvas+ 添加到 Chrome</a>
+</section>
+<section class="wrap blk">
+  <h2>更多免费 Canvas 工具</h2>
+  <div class="more"><a href="/zh/canvas-final-grade-calculator/">期末成绩计算器</a><a href="/zh/canvas-dark-mode/">Canvas 深色模式</a><a href="/zh/download-all-canvas-files/">一键下载课程文件</a><a href="/zh/canvas-assignment-reminders/">作业截止提醒</a><a href="/zh/carmen-canvas-extension/">俄亥俄州立大学 Carmen</a><a href="/zh/">全部功能</a></div>
+</section>
+</main>
+<footer><div class="wrap">
+  <div class="row"><span>Canvas+ (Canvas Plus) · 作者 <a href="https://www.baowenliu.com">Baowen Liu</a></span><span><a href="mailto:support@getcanvasplus.com">support@getcanvasplus.com</a> · <a href="/zh/changelog/">更新日志</a> · <a href="/privacy-zh.html">隐私说明</a> · <a href="https://github.com/getcanvasplus">GitHub</a></span></div>
+  <p>© 2026 Canvas+ · 独立项目，与 Instructure 及任何学校无关。Canvas 是 Instructure, Inc. 的商标。</p>
+</div></footer>
+<script>
+(function () {
+  var root = document.documentElement, L = 'zh';
+  try { localStorage.setItem('cp-lang', L); } catch (e) {}
+  var sw = document.getElementById('lang');
+  if (sw) sw.addEventListener('click', function () { try { localStorage.setItem('cp-lang', sw.dataset.to); } catch (e) {} });
+  var nav = document.getElementById('nav');
+  addEventListener('scroll', function () { nav.classList.toggle('scrolled', scrollY > 8); }, { passive: true });
+  var btn = document.getElementById('theme'), mq = window.matchMedia ? matchMedia('(prefers-color-scheme: dark)') : null, LABEL = {"auto": "主题：跟随系统", "light": "主题：浅色", "dark": "主题：深色"};
+  function sys() { return mq && mq.matches ? 'dark' : 'light'; }
+  function get() { try { var t = localStorage.getItem('cp-theme'); return t === 'light' || t === 'dark' ? t : 'auto'; } catch (e) { return 'auto'; } }
+  function apply(mode) {
+    if (mode === 'auto') { root.removeAttribute('data-theme'); root.style.colorScheme = ''; }
+    else { root.setAttribute('data-theme', mode); root.style.colorScheme = mode; }
+    btn.setAttribute('data-mode', mode); btn.title = LABEL[mode]; btn.setAttribute('aria-label', LABEL[mode]);
+  }
+  apply(get());
+  if (mq && mq.addEventListener) mq.addEventListener('change', function () { if (get() === 'auto') apply('auto'); });
+  btn.addEventListener('click', function () {
+    var cur = get(), s = sys(), next = cur === 'auto' ? (s === 'dark' ? 'light' : 'dark') : (cur !== s ? s : 'auto');
+    try { if (next === 'auto') localStorage.removeItem('cp-theme'); else localStorage.setItem('cp-theme', next); } catch (e) {}
+    apply(next);
+  });
+  addEventListener('storage', function (e) { if (e.key === 'cp-theme') apply(get()); });
+})();
+</script>
+</body>
+</html>
