@@ -586,3 +586,435 @@
   // keep the tooltip in the page language
   new MutationObserver(function () { apply(get()); }).observe(root, { attributes: true, attributeFilter: ['data-lang'] });
 })();
+
+
+
+// ---- hero stickers: drag them around; each one does a little something when tapped ----
+(function () {
+  var layer = document.querySelector('.stk-layer');
+  if (!layer) return;
+  var root = document.documentElement, reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches, top = 10;
+  var zh = function () { return root.getAttribute('data-lang') === 'zh'; };
+  var B = function () { return window.cpBuddy; };
+  [].forEach.call(layer.querySelectorAll('.stk'), function (el) {
+    var sx = 0, sy = 0, ox = 0, oy = 0, moved = false, id = null;
+    el.addEventListener('pointerdown', function (e) {
+      if (e.button !== 0) return;
+      id = e.pointerId; moved = false; sx = e.clientX; sy = e.clientY;
+      ox = parseFloat(el.style.getPropertyValue('--dx')) || 0; oy = parseFloat(el.style.getPropertyValue('--dy')) || 0;
+      el.setPointerCapture(id);
+    });
+    el.addEventListener('pointermove', function (e) {
+      if (e.pointerId !== id) return;
+      var dx = e.clientX - sx, dy = e.clientY - sy;
+      if (!moved && Math.abs(dx) + Math.abs(dy) < 5) return;
+      if (!moved) { moved = true; el.classList.add('drag'); el.style.zIndex = ++top; }
+      el.style.setProperty('--dx', ox + dx + 'px'); el.style.setProperty('--dy', oy + dy + 'px');
+    });
+    function end(e) { if (e.pointerId !== id) return; id = null; el.classList.remove('drag'); if (!moved) tap(el, e); }
+    el.addEventListener('pointerup', end); el.addEventListener('pointercancel', end);
+  });
+
+  function tap(el, e) {
+    if (el.classList.contains('stk-sky')) {
+      // only light ↔ dark here (no "follow the system" step): press the site's theme button until the page shows the other one
+      var t = document.getElementById('theme'), want = shownDark() ? 'light' : 'dark';
+      for (var k = 0; t && k < 3 && root.getAttribute('data-theme') !== want; k++) t.click();
+      return;
+    }
+    if (el.classList.contains('stk-search')) { el.classList.add('press'); setTimeout(function () { el.classList.remove('press'); }, 150); if (window.cpCmdk) window.cpCmdk.open(); else nextQuery(); return; }
+    if (el.classList.contains('stk-ntf')) { nextNote(); return; }
+    if (el.classList.contains('stk-todo')) {
+      var hit2 = document.elementFromPoint(e.clientX, e.clientY), row = hit2 && hit2.closest && hit2.closest('.td-i');
+      if (!row) return;
+      row.classList.toggle('done');
+      var rows = el.querySelectorAll('.td-i'), n = el.querySelectorAll('.td-i.done').length;
+      el.querySelector('.td-n').textContent = n + '/' + rows.length;
+      el.classList.toggle('alldone', n === rows.length);
+      el.classList.remove('synced'); void el.offsetWidth; el.classList.add('synced');
+      if (B()) { if (n === rows.length) B().celebrate(); else if (row.classList.contains('done')) B().say(zh() ? '又搞定一个！' : 'one down!', 1300); }
+      return;
+    }
+    if (el.classList.contains('stk-calc')) {
+      var hit = document.elementFromPoint(e.clientX, e.clientY), b = hit && hit.closest && hit.closest('.stk-tg button');
+      var btns = el.querySelectorAll('.stk-tg button'), cur = [].indexOf.call(btns, el.querySelector('.stk-tg .on'));
+      var next = b || btns[(cur + 1) % btns.length], ni = [].indexOf.call(btns, next);
+      [].forEach.call(btns, function (x) { x.classList.toggle('on', x === next); });
+      el.querySelector('.stk-tg').style.setProperty('--i', ni);
+      var v = parseFloat(next.dataset.v);
+      count(document.getElementById('stkNeed'), v);
+      document.getElementById('stkRing').style.strokeDashoffset = (163.4 * (1 - v / 100)).toFixed(1);
+    }
+  }
+  function count(node, to) {
+    var from = parseFloat(node.textContent) || to, t0 = performance.now(), d = reduce ? 1 : 450;
+    (function f(now) { var k = Math.min(1, (now - t0) / d), v = from + (to - from) * (1 - Math.pow(1 - k, 3));
+      node.firstChild.nodeValue = v.toFixed(1); if (k < 1) requestAnimationFrame(f); })(t0);
+  }
+
+  // notifications: tap for the next one
+  var NOTES = [ [['Grade posted', '出分了'], 'Project 2', 'CSE 2231 · 47 / 50', ['94%', '94%'], 'ok', ['new grade! let’s see', '出分啦！看看～']],
+                [['Due date moved', '截止时间变了'], 'HW 6', ['MATH 2568 · now Friday', 'MATH 2568 · 改到周五'], ['+2d', '+2 天'], 'warn', ['more time, nice', '多了两天，舒服']],
+                [['Announcement', '新公告'], 'Sprint 3', ['CSE 3902 · demo moved', 'CSE 3902 · 演示时间调整'], ['New', '新'], 'info', ['let’s read it', '去看看写了啥']],
+                [['Grade posted', '出分了'], 'Quiz 3', 'CSE 3461 · 9 / 10', ['90%', '90%'], 'ok', ['nice one!', '考得不错！']] ];
+  var ni = 0, nt = document.getElementById('stkNt'), ntfEl = layer.querySelector('.stk-ntf');
+  function L(x) { return Array.isArray(x) ? x[zh() ? 1 : 0] : x; }
+  function nextNote() {
+    if (!nt) return; ni = (ni + 1) % NOTES.length; var n = NOTES[ni];
+    nt.classList.remove('in'); nt.classList.add('out');
+    setTimeout(function () {
+      document.getElementById('ntT').textContent = L(n[0]) + ' · ' + n[1];
+      document.getElementById('ntS').textContent = L(n[2]);
+      var g = document.getElementById('ntG'); g.textContent = L(n[3]); g.className = 'nt-chip ' + n[4];
+      nt.classList.remove('out'); void nt.offsetWidth; nt.classList.add('in');
+      if (B()) { B().joy(); B().say(L(n[5]), 1500); }
+    }, reduce ? 0 : 280);
+  }
+
+  // day / night window follows the site's theme
+  var sky = layer.querySelector('.stk-sky'), mq = window.matchMedia ? matchMedia('(prefers-color-scheme: dark)') : null;
+  function sysdark() { if (sky) sky.classList.toggle('sysdark', !!(mq && mq.matches) && !root.getAttribute('data-theme')); }
+  function shownDark() { var d = root.getAttribute('data-theme'); return d ? d === 'dark' : !!(mq && mq.matches); }
+  sysdark(); if (mq && mq.addEventListener) mq.addEventListener('change', sysdark);
+  new MutationObserver(sysdark).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+
+  // mini search bar: types a query, shows the hit, then the next one
+  var Q = [ ['midterm 2', '期中考试', '#0f7b5f', 'Midterm 2', 'Midterm 2', 'Thu 7 PM', '周四 19:00'],
+            ['homework #30', 'homework #30', '#bb0000', 'Homework #30', 'Homework #30', 'due 11:59 PM', '23:59 截止'],
+            ['office hours', 'office hours', '#6d4fc2', 'Office hours', 'Office hours', 'Fri 2 PM', '周五 14:00'],
+            ['final grade', '期末成绩', '#d97706', 'Need 86.4% on the final', '期末至少要考 86.4%', 'CSE 2231', 'CSE 2231'] ];
+  var qEl = document.getElementById('stkQ'), rEl = document.getElementById('stkR'), qi = -1, qT = 0, auto = 0;
+  function nextQuery() {
+    if (!qEl) return;
+    clearTimeout(qT); clearTimeout(auto); qi = (qi + 1) % Q.length; rEl.classList.remove('on');
+    var q = Q[qi], text = zh() ? q[1] : q[0], i = 0;
+    (function type() { qEl.textContent = text.slice(0, i); if (i++ < text.length) { qT = setTimeout(type, reduce ? 0 : 55 + Math.random() * 50); return; }
+      rEl.innerHTML = '<em style="background:' + q[2] + '"></em><b></b><small></small>';
+      rEl.querySelector('b').textContent = zh() ? q[4] : q[3]; rEl.querySelector('small').textContent = zh() ? q[6] : q[5];
+      rEl.classList.add('on'); auto = setTimeout(nextQuery, 3600); })();
+  }
+  nextQuery();
+})();
+
+// ---- the page buddy: the Canvas+ mascot in the corner, with something to say about each part of the page ----
+(function () {
+  var M = document.getElementById('buddy');
+  if (!M || !getComputedStyle(M).display || getComputedStyle(M).display === 'none') return;
+  var root = document.documentElement, reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var zh = function () { return root.getAttribute('data-lang') === 'zh'; };
+  var T = function (en, z) { return zh() ? z : en; };
+  var bubble = M.querySelector('.stk-hi'), fx = M.querySelector('.m-fx'), hitEl = M.querySelector('.bd-hit'), pupils = M.querySelectorAll('.m-pu, .m-gl');
+  var sayT = 0, busyUntil = 0, asleep = false, idleT = 0, zzzT = 0, taps = [], li = 0, petN = 0, petDir = 0, petT = 0, lastX = 0;
+  function mood(c, ms) { M.classList.remove(c); void M.offsetWidth; M.classList.add(c); setTimeout(function () { M.classList.remove(c); }, ms); }
+  function say(text, ms, force) {
+    var now = Date.now(); if (!force && now < busyUntil) return;
+    busyUntil = now + (ms || 2200); bubble.textContent = text; M.classList.add('talk');
+    clearTimeout(sayT); sayT = setTimeout(function () { M.classList.remove('talk'); }, ms || 2200);
+  }
+  window.cpBuddy = { say: function (t, ms) { wake(); say(t, ms, true); }, joy: function () { wake(); mood('joy', 1000); }, celebrate: celebrate };
+  function spawn(cls, p) { if (reduce) return; var b = document.createElement('b'); if (cls) b.className = cls; if (p.t) b.textContent = p.t;
+    Object.keys(p).forEach(function (k) { if (k !== 't') b.style.setProperty('--' + k, p[k]); }); fx.appendChild(b); setTimeout(function () { b.remove(); }, 2100); }
+  function hearts(n) { for (var i = 0; i < n; i++) setTimeout(function () { spawn('', { t: '♥', x: 20 + Math.random() * 50 + 'px', y: '14px', dx: (Math.random() * 40 - 20) + 'px', rot: (Math.random() * 40 - 20) + 'deg', c: '#ff4d6d', fs: (13 + Math.random() * 8) + 'px' }); }, i * 120); }
+  function celebrate() {
+    wake(); mood('joy', 1400); say(T('all done! nice!', '全部搞定，太棒了！'), 2400, true);
+    var C = ['#e01e2b', '#ffc93c', '#3ddc84', '#5aa9ff', '#a66bff', '#ff8a5c'];
+    for (var i = 0; i < 24; i++) { var a = -Math.PI / 2 + (Math.random() - .5) * 2.6, r = 50 + Math.random() * 80;
+      spawn('conf', { x: '44px', y: '30px', dx: Math.cos(a) * r + 'px', dy: Math.sin(a) * r + 'px', rot: (Math.random() * 720 - 360) + 'deg', c: C[i % C.length] }); }
+  }
+
+  // hello, depending on the time of day
+  setTimeout(function () {
+    M.classList.add('on');
+    var h = new Date().getHours();
+    setTimeout(function () { mood('joy', 900); say(h >= 23 || h < 5 ? T('studying this late? don’t forget to sleep', '这么晚还在学习？记得早点睡')
+      : h < 12 ? T('good morning! I’m the Canvas+ buddy', '早上好！我是 Canvas+ 小苹果') : T('hi! I’m the Canvas+ buddy', '嗨！我是 Canvas+ 小苹果'), 2800, true); }, 500);
+  }, root.classList.contains('intro-on') ? 2600 : 600);
+
+  // something to say about each section, once
+  var LINES = {
+    features: ['all of this is free, by the way', '这些功能都是免费的哦'],
+    ai: ['I only read your own course materials', '我只看你自己的课程资料'],
+    mac: ['I live in your menu bar on Mac too!', '我在 Mac 菜单栏里也有哦！'],
+    compare: ['no uploading, no copy-pasting', '不用上传，也不用复制粘贴'],
+    reviews: ['they said nice things about me…', '大家都在夸我…有点害羞'],
+    pricing: ['the free plan goes a long way', '免费版就够用很久啦'],
+    privacy: ['your grades stay in your browser', '你的成绩不会离开浏览器'],
+    faq: ['questions? the answers are right here', '有问题？答案都在这儿']
+  };
+  if ('IntersectionObserver' in window) {
+    var seen = {};
+    var io = new IntersectionObserver(function (es) { es.forEach(function (e) {
+      var id = e.target.id; if (!e.isIntersecting || seen[id] || asleep) return; seen[id] = 1;
+      mood(id === 'reviews' ? 'pet' : 'joy', 900); say(T(LINES[id][0], LINES[id][1]), 2600);
+    }); }, { threshold: .35 });
+    Object.keys(LINES).forEach(function (id) { var el = document.getElementById(id); if (el) io.observe(el); });
+    var foot = document.querySelector('footer');
+    if (foot) new IntersectionObserver(function (es) { if (es[0].isIntersecting) { mood('joy', 900); say(T('the end! give Canvas+ a try?', '到底啦！要不要装一个试试？'), 2800); } }, { threshold: .3 }).observe(foot);
+  }
+
+  // leans with the scroll, holds on when you scroll really fast
+  var lastY = scrollY, lastT = performance.now(), leanT = 0, fastN = 0;
+  addEventListener('scroll', function () {
+    var now = performance.now(), v = (scrollY - lastY) / Math.max(16, now - lastT); lastY = scrollY; lastT = now;
+    M.style.setProperty('--lean', Math.max(-12, Math.min(12, -v * 6)).toFixed(1) + 'deg');
+    clearTimeout(leanT); leanT = setTimeout(function () { M.style.setProperty('--lean', '0deg'); }, 160);
+    if (Math.abs(v) > 6) { if (++fastN > 6) { fastN = 0; mood('wow', 900); say(T('whoa, slow down!', '慢点慢点～'), 1500); } } else fastN = 0;
+    poke();
+  }, { passive: true });
+
+  // gets excited when you're about to add Canvas+
+  var hypeT = 0;
+  document.addEventListener('pointerover', function (e) {
+    var a = e.target.closest && e.target.closest('a[href*="chromewebstore.google.com"]');
+    if (!a || Date.now() < hypeT) return; hypeT = Date.now() + 15000; wake(); mood('joy', 900); hearts(3); say(T('yes! that one!', '对！就点这个！'), 1800);
+  });
+  // notices highlighting and copying
+  var selT = 0, selSaid = 0;
+  document.addEventListener('selectionchange', function () {
+    clearTimeout(selT); selT = setTimeout(function () { var s = String(getSelection() || '').trim();
+      if (s.length > 12 && Date.now() > selSaid) { selSaid = Date.now() + 30000; mood('wow', 800); say(T('taking notes? ✦', '在划重点吗？✦'), 1800); } }, 500);
+  });
+  document.addEventListener('copy', function () { mood('joy', 800); say(T('copied!', '复制好啦！'), 1300, true); });
+  // reacts to the theme switch
+  new MutationObserver(function () { var d = root.getAttribute('data-theme') === 'dark'; mood(d ? 'wow' : 'joy', 900); say(d ? T('who turned off the lights?', '好黑…') : T('good morning!', '天亮啦！'), 1600, true); })
+    .observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+
+  // tap: a little hop and a line; tap near the eyes: ouch; 4 quick taps: cap toss
+  var TAPS = { en: ['hi!', 'you got this!', 'drink some water', 'only 86 on the final!', 'boop!', 'don’t stay up too late', 'one deadline at a time'],
+               zh: ['嗨！', '冲呀！', '喝口水歇一下', 'final 只要考 86！', '戳我干嘛～', '别熬太晚哦', '一个一个来，不慌'] };
+  hitEl.addEventListener('click', function (e) {
+    if (dragged) { dragged = false; return; }
+    wake();
+    var now = performance.now(); taps = taps.filter(function (t) { return now - t < 1400; }); taps.push(now);
+    if (taps.length >= 4) { taps = []; mood('toss', 1200); mood('joy', 1200); say(T('graduation!', '毕业快乐！'), 1800, true); return; }
+    var r = hitEl.getBoundingClientRect(), y = (e.clientY - r.top) / r.height;
+    if (y > .44 && y < .62) { mood('wow', 900); say(T('ouch, my eye!', '哎哟，戳到眼睛了！'), 1500, true); return; }
+    mood('joy', 900); var L = TAPS[zh() ? 'zh' : 'en']; say(L[li++ % L.length], 1800, true);
+  });
+  // petting: rub back and forth
+  hitEl.addEventListener('pointermove', function (e) {
+    if (M.classList.contains('drag')) return;
+    var d = Math.sign(e.clientX - lastX); lastX = e.clientX;
+    if (d && d !== petDir) { petDir = d; petN++; clearTimeout(petT); petT = setTimeout(function () { petN = 0; }, 700); }
+    if (petN >= 6) { petN = 0; wake(); mood('pet', 1300); hearts(4); say(T('hehe, that tickles', '好舒服～'), 1500, true); }
+  });
+  hitEl.addEventListener('pointerenter', function () { if (asleep) { wake(); mood('wow', 700); say(T('I wasn’t sleeping!', '我没睡！'), 1300, true); } });
+
+  // drag it anywhere: it lands on the nearest side of the window (remembered for next time), but never leaves the screen
+  var dragged = false, POS = 'cp-buddy-pos';
+  function place(x, y, anim) {
+    var w = M.offsetWidth, h = M.offsetHeight, W = innerWidth, H = innerHeight;
+    x = Math.max(12, Math.min(W - w - 12, x)); y = Math.max(76, Math.min(H - h - 10, y));
+    if (!anim) M.style.transition = 'none';
+    M.style.setProperty('--bx', x + 'px'); M.style.setProperty('--by', y + 'px'); M.classList.add('placed');
+    M.classList.toggle('side-l', x + w / 2 < W / 2); M.classList.toggle('high', y < 230);
+    if (!anim) { void M.offsetWidth; M.style.transition = ''; }
+  }
+  function snap(anim) {
+    var r = M.getBoundingClientRect(), left = r.left + r.width / 2 < innerWidth / 2;
+    var x = left ? 22 : innerWidth - r.width - 22;
+    place(x, r.top, anim);
+    try { localStorage.setItem(POS, JSON.stringify({ l: left, y: Math.round(r.top / innerHeight * 1000) / 1000 })); } catch (e) {}
+  }
+  try { var sp = JSON.parse(localStorage.getItem(POS) || 'null');
+    if (sp) place(sp.l ? 22 : innerWidth - M.offsetWidth - 22, sp.y * innerHeight, false); } catch (e) {}
+  addEventListener('resize', function () { if (M.classList.contains('placed')) snap(false); });
+  (function () {
+    var id = null, sx = 0, sy = 0, ox = 0, oy = 0, lx = 0, lt = 0, shake = 0, moving = false;
+    hitEl.addEventListener('pointerdown', function (e) {
+      if (e.button !== 0) return;
+      var r = M.getBoundingClientRect(); id = e.pointerId; sx = e.clientX; sy = e.clientY; ox = r.left; oy = r.top; lx = e.clientX; lt = performance.now(); shake = 0; moving = false;
+      hitEl.setPointerCapture(id);
+    });
+    hitEl.addEventListener('pointermove', function (e) {
+      if (e.pointerId !== id) return;
+      var dx = e.clientX - sx, dy = e.clientY - sy;
+      if (!moving && Math.abs(dx) + Math.abs(dy) < 6) return;
+      if (!moving) { moving = true; dragged = true; wake(); M.classList.add('drag', 'wow'); say(T('whoa—', '哇——'), 900, true); }
+      place(ox + dx, oy + dy, false); M.classList.add('drag');
+      var now = performance.now(), v = (e.clientX - lx) / Math.max(16, now - lt); lx = e.clientX; lt = now;
+      shake += Math.abs(v) > 1.6 ? 1 : -0.05; shake = Math.max(0, shake);
+      var q = Math.min(.18, Math.abs(v) * .07);
+      M.style.setProperty('--sqx', (1 + q).toFixed(3)); M.style.setProperty('--sqy', (1 - q).toFixed(3)); M.style.setProperty('--tilt', Math.max(-14, Math.min(14, v * 9)).toFixed(1) + 'deg');
+    });
+    function up(e) {
+      if (e.pointerId !== id) return; id = null;
+      if (!moving) return;
+      M.classList.remove('drag', 'wow'); M.style.setProperty('--sqx', 1); M.style.setProperty('--sqy', 1); M.style.setProperty('--tilt', '0deg');
+      snap(true);
+      if (shake > 14) { mood('dizzy', 2000); say(T('so dizzy…', '晕了晕了…'), 1900, true); }
+      else { setTimeout(function () { mood('joy', 800); say(T(['nice spot!', 'I like it here', 'comfy!'][Math.floor(Math.random() * 3)], ['这里不错！', '就待这儿吧', '舒服～'][Math.floor(Math.random() * 3)]), 1500, true); }, 450); }
+      setTimeout(function () { dragged = false; }, 50);
+    }
+    hitEl.addEventListener('pointerup', up); hitEl.addEventListener('pointercancel', up);
+  })();
+
+  // eyes follow the cursor; dozes off when nothing happens for a while
+  function wake() { if (asleep) { asleep = false; M.classList.remove('sleep'); clearInterval(zzzT); } poke(); }
+  function poke() { clearTimeout(idleT); idleT = setTimeout(sleep, 15000); }
+  function sleep() { asleep = true; M.classList.add('sleep'); M.classList.remove('talk');
+    zzzT = setInterval(function () { spawn('', { t: 'z', x: (58 + Math.random() * 10) + 'px', y: '14px', dx: '14px', rot: '-10deg', c: 'var(--muted)', fs: (12 + Math.random() * 7) + 'px', d: '2s' }); }, 900); }
+  if (!reduce) {
+    var raf = 0;
+    addEventListener('pointermove', function (e) {
+      if (asleep && Math.hypot(e.movementX || 0, e.movementY || 0) > 40) { wake(); mood('wow', 600); } else if (!asleep) poke();
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(function () {
+        var r = hitEl.getBoundingClientRect(); if (!r.width) return;
+        var cx = r.left + r.width / 2, cy = r.top + r.height * .55, dx = e.clientX - cx, dy = e.clientY - cy, d = Math.hypot(dx, dy) || 1, k = Math.min(1, d / 260);
+        [].forEach.call(pupils, function (p) { p.setAttribute('transform', 'translate(' + (dx / d * 2.6 * k).toFixed(2) + ' ' + (dy / d * 3 * k).toFixed(2) + ')'); });
+      });
+    }, { passive: true });
+    (function blink() { setTimeout(function () { if (!asleep) { M.classList.add('blink'); setTimeout(function () { M.classList.remove('blink'); }, 130); } blink(); }, 2600 + Math.random() * 3200); })();
+    poke();
+  }
+})();
+
+// ---- command palette: ⌘K / Ctrl+K anywhere on the page (or tap the search sticker) ----
+(function () {
+  var box = document.getElementById('cmdk');
+  if (!box) return;
+  var root = document.documentElement, input = document.getElementById('cmdkQ'), list = document.getElementById('cmdkL');
+  var zh = function () { return root.getAttribute('data-lang') === 'zh'; };
+  var P = function (d) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + d + '</svg>'; };
+  var I = {
+    grid: P('<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>'),
+    spark: P('<path d="M11 3.5l1.9 5.1 5.1 1.9-5.1 1.9L11 17.5l-1.9-5.1L4 10.5l5.1-1.9z"/><path d="M19 3v4M17 5h4"/>'),
+    mac: P('<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>'),
+    scale: P('<path d="M12 3v18M5 7h14M5 7l-3 7a3 3 0 0 0 6 0zM19 7l-3 7a3 3 0 0 0 6 0z"/>'),
+    star: P('<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>'),
+    tag: P('<path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="7.5" r="1.5"/>'),
+    lock: P('<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>'),
+    help: P('<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14M12 17h.01"/>'),
+    play: P('<path d="M7 4l13 8-13 8z"/>'),
+    cursor: P('<path d="m4 4 7 17 2.5-7.5L21 11z"/>'),
+    dl: P('<path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>'),
+    apple: P('<path d="M16 13.5c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9-.7 0-1.8-.8-3-.8-1.5 0-3 .9-3.8 2.3-1.6 2.8-.4 7 1.2 9.2.8 1.1 1.7 2.4 2.9 2.3 1.2 0 1.6-.7 3-.7s1.8.7 3 .7 2-1.1 2.8-2.2c.9-1.3 1.2-2.5 1.3-2.6-.1 0-2.5-.9-2.5-3.8zM14 6.6c.6-.8 1.1-1.9.9-2.9-.9 0-2 .6-2.7 1.4-.6.7-1.1 1.8-1 2.8 1 .1 2.1-.5 2.8-1.3z"/>'),
+    moon: P('<path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/>'),
+    globe: P('<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>'),
+    calc: P('<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 11h2M12 11h2M16 11v6M8 15h2M12 15h2"/>'),
+    cap: P('<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c2 2 10 2 12 0v-5"/>'),
+    bell: P('<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>'),
+    zip: P('<path d="M21 8v13H3V8M1 3h22v5H1zM10 12h4"/>'),
+    clock: P('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'),
+    news: P('<path d="M4 4h13v16H6a2 2 0 0 1-2-2z"/><path d="M17 8h3v10a2 2 0 0 1-2 2M8 8h5M8 12h5M8 16h3"/>'),
+    mail: P('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>'),
+    code: P('<path d="m8 8-4 4 4 4M16 8l4 4-4 4M14 4l-4 16"/>'),
+    chat: P('<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>')
+  };
+  var STORE = 'https://chromewebstore.google.com/detail/enihdeipikgagnnkpnanlhfechaflmif';
+  var MAC = 'https://github.com/getcanvasplus/canvas-plus-desktop/releases/latest';
+  var page = function (slug) { return (zh() ? '/zh/' : '/') + slug + '/'; };
+  var go = function (id) { return function () { var el = document.getElementById(id); if (el) el.scrollIntoView({ behavior: 'smooth' }); }; };
+  var open = function (url, blank) { return function () { if (blank) window.open(url, '_blank', 'noopener'); else location.href = typeof url === 'function' ? url() : url; }; };
+  // [group, icon, english label, 中文, english sub, 中文 sub, extra search words, action]
+  var ITEMS = [
+    ['act', 'dl', 'Add Canvas+ to Chrome', '添加 Canvas+ 到 Chrome', 'Free on the Chrome Web Store', 'Chrome 应用商店免费安装', 'install download extension 安装 插件 下载', open(STORE, true)],
+    ['act', 'apple', 'Download for Mac', '下载 Mac 版', 'Menu bar app + desktop widgets', '菜单栏 + 桌面小组件', 'macos app widget 苹果 小组件', open(MAC, true)],
+    ['act', 'cursor', 'Try the live demo', '试试在线演示', 'Click around a real Canvas+ panel', '点一点真实的 Canvas+ 面板', 'demo preview 演示 试用', go('demo')],
+    ['act', 'moon', 'Switch light / dark', '切换浅色 / 深色', 'Change the look of this site', '切换网站外观', 'theme dark mode light 主题 深色 暗色 夜间', function () { var t = document.getElementById('theme'), d = root.getAttribute('data-theme'), m = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches, want = (d ? d === 'dark' : m) ? 'light' : 'dark'; for (var k = 0; t && k < 3 && root.getAttribute('data-theme') !== want; k++) t.click(); }],
+    ['act', 'globe', 'Switch to 中文', 'Switch to English', 'Change the language', '切换语言', 'language chinese english 语言 中文 英文', function () { var l = document.getElementById('lang'); if (l) l.click(); }],
+    ['sec', 'grid', 'Features', '功能', 'Everything in one panel', '一个面板，全部搞定', 'deadlines grades 功能 作业', go('features')],
+    ['sec', 'spark', 'Canvas+ AI', 'Canvas+ AI', 'Guides, syllabus, Q&A, review packs', '作业拆解、大纲、问答、复习包', 'ai assistant gpt 人工智能 问答', go('ai')],
+    ['sec', 'mac', 'Canvas+ for Mac', 'Mac 版', 'Widgets and the menu bar', '桌面小组件和菜单栏', 'mac widget 小组件', go('mac')],
+    ['sec', 'scale', 'Compare', '对比', 'Canvas+ vs. AI study sites and chatbots', 'Canvas+ 和 AI 学习网站、聊天机器人对比', 'vs comparison 比较', go('compare')],
+    ['sec', 'star', 'Reviews', '用户评价', 'What students say', '听听学生们怎么说', 'reviews rating 评价 评分', go('reviews')],
+    ['sec', 'tag', 'Pricing', '价格', 'Free, Plus and Pro', '免费版、Plus 和 Pro', 'price plans pro plus 价格 会员 付费', go('pricing')],
+    ['sec', 'lock', 'Privacy', '隐私', 'Your grades never leave your browser', '成绩不离开你的浏览器', 'privacy security data 隐私 安全', go('privacy')],
+    ['sec', 'help', 'FAQ', '常见问题', 'Answers to common questions', '常见问题解答', 'faq help questions 帮助 问题', go('faq')],
+    ['sec', 'play', 'Watch the film', '观看宣传片', 'Canvas+ in a minute', '一分钟了解 Canvas+', 'video film 视频 宣传片', go('film')],
+    ['pg', 'calc', 'Final grade calculator', '期末成绩计算器', 'What do I need on the final?', '期末要考多少分？', 'final grade calculator 期末 计算器', open(function () { return page('canvas-final-grade-calculator'); })],
+    ['pg', 'cap', 'GPA calculator', 'GPA 计算器', 'Term and cumulative GPA', '学期和累计 GPA', 'gpa wam 绩点', open(function () { return page('canvas-gpa-calculator'); })],
+    ['pg', 'moon', 'Canvas dark mode', 'Canvas 深色模式', 'A real dark mode for Canvas', '给 Canvas 真正的深色模式', 'dark mode theme 暗色 夜间', open(function () { return page('canvas-dark-mode'); })],
+    ['pg', 'zip', 'Download course files', '一键下载课程文件', 'Every file in one .zip', '整门课打包成 .zip', 'zip download files 下载 文件 打包', open(function () { return page('download-all-canvas-files'); })],
+    ['pg', 'bell', 'Assignment reminders', '作业截止提醒', 'Never miss a deadline', '再也不错过截止时间', 'reminders deadlines notifications 提醒 截止 通知', open(function () { return page('canvas-assignment-reminders'); })],
+    ['pg', 'clock', 'For Ohio State (Carmen)', '俄亥俄州立大学 Carmen', 'Works on Carmen right away', '装好就能在 Carmen 上用', 'osu ohio state carmen buckeye 俄亥俄', open(function () { return page('carmen-canvas-extension'); })],
+    ['pg', 'news', 'Changelog', '更新日志', 'What’s new in each version', '每个版本更新了什么', 'changelog updates version release 更新 版本', open(function () { return page('changelog'); })],
+    ['pg', 'lock', 'Privacy policy', '隐私说明', 'What Canvas+ keeps, and what it doesn’t', 'Canvas+ 保存什么、不保存什么', 'privacy policy 隐私 政策', open(function () { return zh() ? '/privacy-zh.html' : '/privacy.html'; })],
+    ['pg', 'mail', 'Contact support', '联系我们', 'support@getcanvasplus.com', 'support@getcanvasplus.com', 'email contact support bug feedback 邮件 联系 反馈', open('mailto:support@getcanvasplus.com')],
+    ['pg', 'chat', 'Community on Reddit', 'Reddit 用户社区', 'r/GetCanvasPlus', 'r/GetCanvasPlus', 'reddit community 社区', open('https://www.reddit.com/r/GetCanvasPlus/', true)],
+    ['pg', 'code', 'Open source on GitHub', 'GitHub 开源代码', 'The grade math and export code', '成绩计算和导出代码', 'github open source code 开源', open('https://github.com/getcanvasplus', true)]
+  ];
+  var GROUPS = { act: ['Actions', '快捷操作'], sec: ['On this page', '本页'], pg: ['Pages & links', '页面和链接'] };
+  var shown = [], sel = 0, last = null;
+
+  function esc(s) { return s.replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  // where the query matches the text: one run if it appears as-is, else the letters in order (fuzzy)
+  function match(text, q, exact) {
+    var t = text.toLowerCase(), i = t.indexOf(q);
+    if (i >= 0) return { score: i === 0 ? 3 : (/\s/.test(t[i - 1] || '') ? 2.5 : 2), marks: [[i, i + q.length]] };
+    if (exact) return null;
+    var m = [], j = 0;
+    for (var k = 0; k < t.length && j < q.length; k++) if (t[k] === q[j]) { if (m.length && m[m.length - 1][1] === k) m[m.length - 1][1] = k + 1; else m.push([k, k + 1]); j++; }
+    // fuzzy only for short gaps: every matched run starts a word, or there are at most two runs
+    var ok = j === q.length && q.length > 1 && m.length <= 2 && m.every(function (r) { return r[0] === 0 || /[\s\-/(&+·]/.test(t[r[0] - 1]); });
+    return ok ? { score: 1 - m.length * .1, marks: m } : null;
+  }
+  function hl(text, marks) {
+    if (!marks) return esc(text); var out = '', p = 0;
+    marks.forEach(function (r) { out += esc(text.slice(p, r[0])) + '<mark>' + esc(text.slice(r[0], r[1])) + '</mark>'; p = r[1]; });
+    return out + esc(text.slice(p));
+  }
+  function render() {
+    var q = input.value.trim().toLowerCase(), z = zh();
+    var rows = [];
+    ITEMS.forEach(function (it, n) {
+      var label = z ? it[3] : it[2], sub = z ? it[5] : it[4];
+      if (!q) { rows.push({ it: it, n: n, label: hl(label), sub: esc(sub), score: 0 }); return; }
+      var a = match(label, q), b = a ? null : match(it[2] + ' ' + it[3], q, true), c = a || b ? null : match(sub + ' ' + it[6], q, true);
+      var best = a || b || c; if (!best) return;
+      rows.push({ it: it, n: n, label: hl(label, a && a.marks), sub: c && match(sub, q, true) ? hl(sub, match(sub, q, true).marks) : esc(sub), score: (a ? 10 : b ? 6 : 2) + best.score });
+    });
+    if (q) rows.sort(function (x, y) { return y.score - x.score || x.n - y.n; });
+    shown = rows; sel = 0;
+    if (!rows.length) { list.innerHTML = '<div class="cmdk-empty"><b>' + (z ? '没有找到“' : 'No results for “') + esc(input.value.trim()) + '”</b>' + (z ? '换个关键词试试，比如“GPA”或“深色”' : 'Try “GPA”, “dark” or “Mac”') + '</div>'; return; }
+    var html = '', g = null, ENTER = z ? '打开' : 'Open';
+    rows.forEach(function (r, i) {
+      var grp = q ? (i === 0 ? 'top' : 'rest') : r.it[0];
+      if (grp !== g) { g = grp; var name = q ? (grp === 'top' ? (z ? '最佳匹配' : 'Best match') : (z ? '其他结果' : 'More results')) : GROUPS[grp][z ? 1 : 0]; html += '<div class="cmdk-grp">' + name + '</div>'; }
+      html += '<div class="cmdk-it' + (i === 0 ? ' sel' : '') + '" role="option" id="cmdk-' + i + '" data-i="' + i + '"><span class="ic2">' + I[r.it[1]] + '</span><span class="tx"><b>' + r.label + '</b><small>' + r.sub + '</small></span><span class="go">' + ENTER + ' <kbd>↵</kbd></span></div>';
+    });
+    list.innerHTML = html; list.scrollTop = 0; aria();
+  }
+  function aria() { input.setAttribute('aria-activedescendant', shown.length ? 'cmdk-' + sel : ''); }
+  function select(i, scroll) {
+    if (!shown.length) return; sel = (i + shown.length) % shown.length;
+    [].forEach.call(list.querySelectorAll('.cmdk-it'), function (el) { el.classList.toggle('sel', +el.dataset.i === sel); });
+    var el = document.getElementById('cmdk-' + sel); if (el && scroll) el.scrollIntoView({ block: 'nearest' }); aria();
+  }
+  function run(i) { var r = shown[i]; if (!r) return; close(); setTimeout(r.it[7], 60); if (window.cpBuddy) window.cpBuddy.joy(); }
+  function labels() {
+    var z = zh(); input.placeholder = z ? '搜索功能、页面或操作…' : 'Search features, pages and actions…';
+    box.querySelector('.ft-mv').textContent = z ? '选择' : 'move'; box.querySelector('.ft-go').textContent = z ? '打开' : 'open'; box.querySelector('.ft-x').textContent = z ? '关闭' : 'close';
+  }
+  function openBox(seed) {
+    if (box.classList.contains('open')) return;
+    last = document.activeElement; labels(); input.value = seed || ''; render();
+    box.classList.add('open'); root.classList.add('cmdk-lock');
+    requestAnimationFrame(function () { box.classList.add('show'); input.focus(); input.select(); });
+  }
+  function close() {
+    if (!box.classList.contains('open')) return;
+    box.classList.remove('show'); root.classList.remove('cmdk-lock');
+    setTimeout(function () { box.classList.remove('open'); }, 220);
+    if (last && last.focus) try { last.focus({ preventScroll: true }); } catch (e) {}
+  }
+  window.cpCmdk = { open: openBox, close: close };
+
+  document.addEventListener('keydown', function (e) {
+    if ((e.metaKey || e.ctrlKey) && !e.altKey && !e.shiftKey && (e.key === 'k' || e.key === 'K')) { e.preventDefault(); box.classList.contains('open') ? close() : openBox(); return; }
+    if (!box.classList.contains('open')) {
+      if (e.key === '/' && !/input|textarea|select/i.test((document.activeElement || {}).tagName || '') && !document.activeElement.isContentEditable) { e.preventDefault(); openBox(); }
+      return;
+    }
+    if (e.key === 'Escape') { e.preventDefault(); close(); }
+    else if (e.key === 'ArrowDown' || (e.key === 'Tab' && !e.shiftKey) || (e.ctrlKey && e.key === 'n')) { e.preventDefault(); select(sel + 1, true); }
+    else if (e.key === 'ArrowUp' || (e.key === 'Tab' && e.shiftKey) || (e.ctrlKey && e.key === 'p')) { e.preventDefault(); select(sel - 1, true); }
+    else if (e.key === 'Home' && e.ctrlKey) { e.preventDefault(); select(0, true); }
+    else if (e.key === 'Enter') { e.preventDefault(); run(sel); }
+  });
+  input.addEventListener('input', render);
+  list.addEventListener('mousemove', function (e) { var it = e.target.closest('.cmdk-it'); if (it && +it.dataset.i !== sel) select(+it.dataset.i, false); });
+  list.addEventListener('click', function (e) { var it = e.target.closest('.cmdk-it'); if (it) run(+it.dataset.i); });
+  box.querySelector('[data-close]').addEventListener('click', close);
+})();
