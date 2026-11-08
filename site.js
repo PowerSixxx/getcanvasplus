@@ -2,6 +2,8 @@
 (function () {
   var root = document.documentElement, $ = function (s, el) { return (el || document).querySelector(s); }, $$ = function (s, el) { return [].slice.call((el || document).querySelectorAll(s)); };
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // the folder site.js is in (the site root), for pictures the demo loads on /zh/ too
+  var SITE = (function () { try { return new URL('.', document.currentScript.src).href; } catch (e) { return '/'; } })();
 
   // ---- language ----
   var key = 'cp-lang', saved = null;
@@ -114,7 +116,10 @@
     { t: 'Study group (Dreese 280)', c: 'CSE 3521', k: 'event', h: 98.2 },
     { t: 'HW2: Search algorithms', c: 'CSE 3521', k: 'assignment', p: 100, h: 143.4, w: 20 },
     { t: 'Project proposal', c: 'CSE 3521', k: 'assignment', p: 20, h: 215.6, w: 5 },
-    { t: 'Problem Set 5', c: 'STAT 3470', k: 'assignment', p: 40, h: 290, w: 12 }
+    { t: 'Problem Set 5', c: 'STAT 3470', k: 'assignment', p: 40, h: 290, w: 12 },
+    { t: 'Midterm exam', c: 'CSE 2431', k: 'event', h: 380, w: 25 },
+    { t: 'Project 2: Shell scheduler', c: 'CSE 2431', k: 'assignment', p: 50, h: 430, w: 8 },
+    { t: 'Quiz 4 — Network layer', c: 'CSE 3461', k: 'quiz', p: 10, h: 545, w: 2.5 }
   ];
   var done = {}, days = 14, showDone = false, view = 'list', hide = {}, showKinds = false, cardAnim = false, listAnim = false, lastKind = '';
   function left(ms) {
@@ -133,6 +138,45 @@
         return '<button class="p-kchip' + (on ? ' on' : '') + (k === lastKind ? ' pop' : '') + '" role="checkbox" aria-checked="' + on + '" data-act="kind" data-k="' + k + '"><span class="kc">' + ic('check', 3) + '</span>' + L(KINDS[k][2], KZH[k]) + '</button>'; }).join('') +
       '</div><p class="p-khint">' + L('Events are calendar items such as office hours and class meetings, plus page to-dos and notes. Hidden types also leave the badge, reminders and calendar export.',
         '日程指 office hour、上课时间这类日历安排，以及页面待办和笔记。隐藏的类型也不会出现在图标数字、到期提醒和日历导出里。') + '</p></div>';
+  }
+  // ---- Weekly load: the next 4 weeks as heat cells above the list (as in the extension since 1.4) ----
+  // Each week: every item counts 1, plus a third of its share of the final grade, plus 4 for an exam. Monday–Sunday weeks.
+  var heatSel = null, heatFold = false;
+  var EXAM_RE = /\b(exams?|midterms?|tests?)\b|考试|期中|期末考/i;
+  function heatWeeks() {
+    var d = new Date(start), back = (d.getDay() + 6) % 7;
+    return [0, 1, 2, 3].map(function (i) { return { i: i, s: new Date(d.getFullYear(), d.getMonth(), d.getDate() - back + 7 * i).getTime(), e: new Date(d.getFullYear(), d.getMonth(), d.getDate() - back + 7 * (i + 1)).getTime(), items: [], score: 0, exams: 0 }; });
+  }
+  function heatStrip() {
+    var weeks = heatWeeks(), now = Date.now() - start;
+    DL.forEach(function (x, i) {
+      var due = start + x.h * 3600e3, exam = EXAM_RE.test(x.t);
+      if (done[i] || hide[x.k] || x.h * 3600e3 < now || (x.k === 'event' && !exam)) return;
+      var w = weeks.filter(function (w) { return due >= w.s && due < w.e; })[0]; if (!w) return;
+      var sc = 1 + (x.w || 0) / 3 + (exam ? 4 : 0);
+      w.items.push({ x: x, due: due, exam: exam, sc: sc }); w.score += sc; if (exam) w.exams++;
+    });
+    var lv = function (sc) { return sc <= 0 ? 0 : sc < 3 ? 1 : sc < 7 ? 2 : sc < 12 ? 3 : 4; };
+    var LV = [['Free', '空闲'], ['Light', '轻松'], ['Moderate', '适中'], ['Busy', '较忙'], ['Crunch', '爆炸']];
+    var name = function (w) { return w.i === 0 ? L('This week', '本周') : w.i === 1 ? L('Next week', '下周')
+      : zh() ? (new Date(w.s).getMonth() + 1) + '月' + new Date(w.s).getDate() + '日起' : 'From ' + new Date(w.s).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); };
+    weeks.forEach(function (w) { w.lv = lv(w.score); w.items.sort(function (a, b) { return b.sc - a.sc || a.due - b.due; }); });
+    var head = '<div class="p-hh"><button class="p-htog" data-act="heatfold" aria-expanded="' + !heatFold + '"><b>' + L('Workload · next 4 weeks', '未来 4 周负荷') + '</b>' + ic('down') + '</button>' +
+      (heatFold ? '<span class="p-hmini">' + weeks.map(function (w) { return '<i class="hl' + w.lv + '"></i>'; }).join('') + '</span>'
+        : '<span class="p-hleg">' + L('Light', '轻') + [1, 2, 3, 4].map(function (l) { return '<i class="hl' + l + '"></i>'; }).join('') + L('Heavy', '重') + '</span>') + '</div>';
+    if (heatFold) return '<div class="p-heat folded">' + head + '</div>';
+    var exl = function (n) { return n === 1 ? L('1 exam', '1 场考试') : L(n + ' exams', n + ' 场考试'); };
+    var cells = weeks.map(function (w) {
+      return '<button class="p-hc hl' + w.lv + (heatSel === w.i ? ' on' : '') + '" data-act="heat" data-w="' + w.i + '"><span class="wk">' + name(w) + '</span><b>' + w.items.length + '</b>' +
+        '<span class="lv">' + (w.exams ? exl(w.exams) : L(LV[w.lv][0], LV[w.lv][1])) + '</span><i></i></button>';
+    }).join('');
+    var det = '', sw = heatSel != null ? weeks[heatSel] : null;
+    if (sw) det = '<div class="p-hd"><p>' + name(sw) + ' · ' + L(sw.items.length + ' to do', sw.items.length + ' 项待办') + '</p>' + (sw.items.length ? sw.items.map(function (it) {
+        var d = new Date(it.due), day = zh() ? '周' + '日一二三四五六'[d.getDay()] + ' ' + (d.getMonth() + 1) + '/' + d.getDate() : d.toLocaleDateString('en-US', { weekday: 'short', month: 'numeric', day: 'numeric' });
+        return '<div class="p-hi"><span class="p-dot" style="background:' + col(it.x.c) + '"></span><span class="m"><b>' + it.x.t + '</b><small>' + it.x.c + ' · ' + day + '</small></span>' +
+          (it.exam ? '<span class="p-wt hi">' + L('Exam · ' + it.x.w + '%', '考试 · ' + it.x.w + '%') + '</span>' : it.x.w ? '<span class="p-wt' + (it.x.w >= 10 ? ' hi' : it.x.w >= 5 ? ' mid' : '') + '">' + L(it.x.w + '%', '占 ' + it.x.w + '%') + '</span>' : '') + '</div>';
+      }).join('') : '<p class="e">' + L('Nothing due this week.', '这周没有要交的东西。') + '</p>') + '</div>';
+    return '<div class="p-heat">' + head + '<div class="p-hrow">' + cells + '</div>' + det + '</div>';
   }
   function paneDL() {
     var nHidden = Object.keys(hide).filter(function (k) { return hide[k]; }).length;
@@ -162,7 +206,7 @@
       '<span class="p-ib"><span class="p-kb' + (nHidden ? ' on' : '') + (showKinds ? ' open' : '') + '" data-act="kinds" title="' + L('Types', '类型') + '">' + ic('filter') + (nHidden ? '<i></i>' : '') + '</span>' +
       '<span>' + ic('cal') + '</span><span class="on">' + ic('bell') + '</span><span>' + ic('refresh') + '</span></span></div>' +
       (showKinds ? kindCard() : '') +
-      (view === 'cal' ? cal : (rows ? '<div class="p-list' + (listAnim ? ' p-fade' : '') + '">' + rows + '</div>'
+      (view === 'cal' ? cal : heatStrip() + (rows ? '<div class="p-list' + (listAnim ? ' p-fade' : '') + '">' + rows + '</div>'
         : '<div class="p-empty">' + L('Nothing to show — every type is hidden.', '所有类型都隐藏了，没有可显示的。') + ' <a data-act="kindsall">' + L('Show all', '全部显示') + '</a></div>'));
   }
 
@@ -273,17 +317,49 @@
 
   // ---- Appearance ----
   var dark = false, auto = false;
+  // Style themes: the five shown first in the extension, then three of the rest (art + page pattern made by the extension).
+  var FONTS = { rounded: 'ui-rounded, "SF Pro Rounded", "Hiragino Maru Gothic ProN", "Arial Rounded MT Bold", "PingFang SC", system-ui, sans-serif',
+    serif: '"Iowan Old Style", Palatino, "Palatino Linotype", Georgia, "Songti SC", "Noto Serif SC", serif', hand: 'Noteworthy, "Segoe Print", "Bradley Hand", "Kaiti SC", STKaiti, KaiTi, cursive',
+    mono: '"SF Mono", ui-monospace, Menlo, Consolas, "PingFang SC", monospace', futura: 'Futura, "Century Gothic", "Avenir Next", "PingFang SC", sans-serif',
+    avenir: '"Avenir Next", Avenir, "Segoe UI", "PingFang SC", sans-serif' };
+  var SKINS = [
+    { id: 'city', n: ['City Lights', '繁华都市'], prim: '#4a5bd4', page: '#f1f2f8', f: 'futura' }, { id: 'ocean', n: ['Open Sea', '大海'], prim: '#0a7bbf', page: '#edf6fa', f: 'avenir' },
+    { id: 'forest', n: ['Forest', '森林'], prim: '#2f7a4a', page: '#f2f6ef', f: 'serif' }, { id: 'paws', n: ['Cat Paws', '猫爪'], prim: '#a26b44', page: '#f8f3ec', f: 'rounded' },
+    { id: 'burger', n: ['Burger & Fries', '薯条汉堡'], prim: '#d9481f', page: '#fff7ea', f: 'rounded' },
+    { id: 'rain', n: ['Rainy Day', '雨天'], prim: '#3b82c4', page: '#eff3f7', f: 'avenir' }, { id: 'cafe', n: ['Café', '咖啡馆'], prim: '#8a5a3c', page: '#f8f1e9', f: 'serif' },
+    { id: 'sea', n: ['Sea Salt', '海盐'], prim: '#0b7f9a', page: '#eef7fb', f: 'rounded' }
+  ];
+  var skin = '', font = '', moreSkins = false;
+  var skinOf = function (id) { return SKINS.filter(function (x) { return x.id === id; })[0] || null; };
+  // A theme gives the panel its page colour, pattern and accent (as in the extension); a font choice changes the text.
+  function applySkin() {
+    var k = skinOf(skin), st = dm.style;
+    dm.classList.toggle('skin', !!k);
+    if (k) { st.setProperty('--p-acc', k.prim); st.setProperty('--p-page', k.page); st.setProperty('--p-pat', 'url("' + SITE + 'img/themes/pat-' + k.id + '.svg")'); }
+    else ['--p-acc', '--p-page', '--p-pat'].forEach(function (v) { st.removeProperty(v); });
+    var f = font ? FONTS[font] : k ? FONTS[k.f] : '';
+    st.fontFamily = f || '';
+  }
   function paneLook() {
     var row = function (icn, a, b, right, act) { return '<div class="p-set"' + (act ? ' data-act="' + act + '"' : '') + '><span class="p-ico">' + ic(icn) + '</span><div class="tx"><b>' + a + '</b><small>' + b + '</small></div>' + right + '</div>'; };
-    var sw = function (on) { return '<button class="p-sw' + (on ? ' on' : '') + '"></button>'; };
     var chev = function (t) { return '<span class="chev">' + (t || '') + ic('right') + '</span>'; };
-    return '<div class="p-sec">' + L('Theme', '外观') + '</div><div class="p-group">' +
-      row('moon', L('Dark mode', '暗色模式'), L('No white flashes between pages', '切换页面不闪白'), sw(dark), 'dark') +
-      row('sun', L('Follow my computer', '跟随系统深浅色'), L('Light by day, dark at night', '系统切换时自动跟着变'), sw(auto), 'auto') +
-      row('img', L('Background picture', '背景图片'), L('Your photo behind frosted cards', '自定义背景图和毛玻璃卡片'), chev()) + '</div>' +
+    var mode = auto ? 'auto' : dark ? 'dark' : 'light';
+    var tc = function (m, en, z) { return '<button class="p-tc' + (mode === m ? ' on' : '') + '" data-act="mode" data-m="' + m + '"><i class="' + m + '"><u></u><u></u></i>' + L(en, z) + '</button>'; };
+    var sk = function (k) { var on = skin === (k ? k.id : '');
+      return '<button class="p-sk' + (on ? ' on' : '') + '" data-act="skin" data-k="' + (k ? k.id : '') + '"><i' + (k ? ' style="background-image:url(&quot;' + SITE + 'img/themes/art-' + k.id + '.webp&quot;)"' : '') + '>' +
+        (on ? '<b>' + ic('check', 3) + L('On', '使用中') + '</b>' : '') + '</i><span' + (k ? ' style="font-family:' + FONTS[k.f].replace(/"/g, '&quot;') + '"' : '') + '>' + (k ? L(k.n[0], k.n[1]) : L('Classic', '经典')) + '</span></button>'; };
+    var fn = function (k, en, z) { var stack = k ? FONTS[k] : (skinOf(skin) ? FONTS[skinOf(skin).f] : '');
+      return '<button class="p-fn' + (font === k ? ' on' : '') + '" data-act="font" data-k="' + k + '"><span' + (stack ? ' style="font-family:' + stack.replace(/"/g, '&quot;') + '"' : '') + '>Aa</span><small>' + L(en, z) + '</small></button>'; };
+    return '<div class="p-sec">' + L('Look', '外观设置') + '</div><div class="p-tcs">' + tc('light', 'Light', '浅色模式') + tc('dark', 'Dark', '暗色模式') + tc('auto', 'System', '跟随系统') + '</div>' +
+      '<div class="p-sec">' + L('Themes', '风格主题') + '</div><p class="p-hint">' + L('Course-card art, page background, colours and a font, all in one tap.', '一键换上课程卡片配图、页面背景、配色和字体。') + '</p>' +
+      '<div class="p-skins">' + sk(null) + SKINS.slice(0, moreSkins ? 8 : 5).map(sk).join('') + '</div>' +
+      (moreSkins ? '<p class="p-hint p-hint2">' + L('…and 15 more in the extension.', '……插件里还有 15 套。') + '</p>' : '') +
+      '<button class="p-more" data-act="more">' + (moreSkins ? L('Show fewer', '收起') : L('Show all themes (+18)', '展开更多主题（+18）')) + ic(moreSkins ? 'up' : 'down') + '</button>' +
+      '<div class="p-sec">' + L('Font', '字体') + '</div><div class="p-fonts">' + fn('', 'Theme', '跟随主题') + fn('rounded', 'Rounded', '圆体') + fn('serif', 'Serif', '衬线') + fn('hand', 'Handwritten', '手写') + fn('mono', 'Mono', '等宽') + '</div>' +
       '<div class="p-sec">' + L('Course colours', '课程配色') + '</div><div class="p-group"><div class="p-pals">' + PALS.map(function (p, k) {
         return '<button class="p-pal' + (k === pal ? ' on' : '') + '" data-act="pal" data-k="' + k + '">' + p.c.map(function (c) { return '<i style="background:' + c + '"></i>'; }).join('') + ' ' + L(p.n[0], p.n[1]) + '</button>'; }).join('') + '</div></div>' +
       '<div class="p-sec">' + L('Menus', '菜单') + '</div><div class="p-group">' +
+      row('img', L('Background picture', '页面背景'), L('Your own photo behind Canvas', '用自己的照片当 Canvas 背景'), chev()) +
       row('menu', L('Course menu', '课程菜单'), L('Hide Discussions, People, Chat…', '隐藏 Discussions、People、Chat 等'), chev(L('3 hidden', '已隐藏 3 项'))) +
       row('side', L('Canvas’s left menu', '最左侧导航栏'), L('Hide Help, History, Groups…', '隐藏 Help、History、Groups 等'), chev(L('2 hidden', '已隐藏 2 项'))) + '</div>';
   }
@@ -291,7 +367,7 @@
   // ---- shell: header, tabs, panes ----
   var TABS = [['Deadlines', '作业倒计时'], ['Final calc', '期末计算器'], ['AI Course', 'AI 课程'], ['Appearance', '界面美化']];
   function draw() {
-    dm.classList.toggle('dark', dark);
+    dm.classList.toggle('dark', dark); applySkin();
     var tabs = TABS.map(function (x, i) { return '<button class="p-tab' + (i === cur ? ' on' : '') + (i === 2 ? ' ai' : '') + '" data-tab="' + i + '">' + (i === 2 ? ic('spark') : '') + L(x[0], x[1]) + (i === 2 ? '<span class="rd"></span>' : '') + '</button>'; }).join('');
     var panes = [paneDL(), paneCalc(), paneAI(), paneLook()].map(function (h, i) { return '<div class="p-pane' + (i === cur ? ' on' : '') + '">' + h + '</div>'; }).join('');
     dm.innerHTML = '<div class="p-head"><div class="p-row"><span class="p-brand">Canvas<b>+</b></span><span class="p-search">' + ic('search') + '<span>' + L('Search…', '搜索课程、作业…') + '</span><span class="p-new">' + L('New', '新') + '</span><span class="p-kbd"><i>⌘</i><i>K</i></span></span><span class="p-end"><span class="p-av">A</span><span class="p-x">×</span></span></div>' +
@@ -331,6 +407,8 @@
     else if (a === 'kinds') { showKinds = !showKinds; cardAnim = showKinds; redrawPane(0); cardAnim = false; }
     else if (a === 'kind') { hide[t.dataset.k] = !hide[t.dataset.k]; lastKind = t.dataset.k; listAnim = true; redrawPane(0); listAnim = false; lastKind = ''; }
     else if (a === 'kindsall') { hide = {}; listAnim = true; redrawPane(0); listAnim = false; }
+    else if (a === 'heat') { var w = +t.dataset.w; heatSel = heatSel === w ? null : w; redrawPane(0); }
+    else if (a === 'heatfold') { heatFold = !heatFold; heatSel = null; redrawPane(0); }
     else if (a === 'ai') show(2);
     else if (a === 'back') show(0);
     else if (a === 'course') { ci = (ci + 1) % C.length; redrawPane(1); }
@@ -340,6 +418,11 @@
     else if (a === 'dark') { dark = !dark; auto = false; dm.classList.toggle('dark', dark); redrawPane(3); redrawPane(1); }
     else if (a === 'auto') { auto = !auto; if (auto) dark = matchMedia('(prefers-color-scheme: dark)').matches; dm.classList.toggle('dark', dark); redrawPane(3); }
     else if (a === 'pal') { pal = +t.dataset.k; redrawPane(3); redrawPane(0); redrawPane(1); }
+    // themes are light looks: a theme turns dark mode off, dark mode goes back to Classic (as in the extension)
+    else if (a === 'mode') { var m = t.dataset.m; auto = m === 'auto'; dark = m === 'dark' || (auto && matchMedia('(prefers-color-scheme: dark)').matches); if (dark) skin = ''; dm.classList.toggle('dark', dark); applySkin(); redrawPane(3); redrawPane(1); }
+    else if (a === 'skin') { skin = t.dataset.k; if (skin) { dark = false; auto = false; dm.classList.remove('dark'); } applySkin(); redrawPane(3); redrawPane(1); }
+    else if (a === 'more') { moreSkins = !moreSkins; redrawPane(3); }
+    else if (a === 'font') { font = t.dataset.k; applySkin(); redrawPane(3); }
   });
   dm.addEventListener('pointerdown', function () { touched = true; });
 
@@ -496,7 +579,7 @@
       function () { calcHome = false; redrawPane(1); point('.p-tgt', L('Change the <b>target grade</b> — see what you need on the final', '<b>换个目标成绩</b>，看看期末要考多少')); },
       function () { show(0); showKinds = true; cardAnim = true; redrawPane(0); cardAnim = false; point('.p-kchip', L('<b>Filter</b> by type — hide events, quizzes, anything', '按<b>类型筛选</b>：隐藏日程、测验等')); },
       function () { show(2); point('.p-badge', L('A step-by-step <b>AI guide</b> for the assignment', 'AI 把作业<b>一步步拆解</b>')); },
-      function () { show(3); point('.p-pal', L('Try a <b>colour palette</b> or <b>dark mode</b>', '试试<b>课程配色</b>或<b>暗色模式</b>')); },
+      function () { show(3); point('.p-skins', L('Pick a <b>theme</b>: the whole look changes', '选一个<b>风格主题</b>，整个风格跟着变')); },
       function () { coach.classList.remove('show'); }
     ];
     steps.forEach(function (f, i) { tourT.push(setTimeout(f, (reduce ? 0 : 500) + i * 3200)); });
@@ -549,7 +632,7 @@
 
   setLang(lang === 'zh' ? 'zh' : 'en');
   // For the page that embeds the demo: follow its language and light / dark mode.
-  window.cpDemo = { setLang: function (l) { setLang(l === 'zh' ? 'zh' : 'en'); }, setDark: function (d) { dark = !!d; auto = false; draw(); } };
+  window.cpDemo = { setLang: function (l) { setLang(l === 'zh' ? 'zh' : 'en'); }, setDark: function (d) { dark = !!d; auto = false; if (dark) skin = ''; draw(); } };
   if (EMBED) {
     var th = new URLSearchParams(location.search).get('theme'); if (th === 'dark') window.cpDemo.setDark(true);
     addEventListener('message', function (e) { var d = e.data || {}; if (d.cpDemo) { if (d.lang) window.cpDemo.setLang(d.lang); if (d.theme) window.cpDemo.setDark(d.theme === 'dark'); } });
@@ -915,6 +998,7 @@
     ['act', 'moon', 'Switch light / dark', '切换浅色 / 深色', 'Change the look of this site', '切换网站外观', 'theme dark mode light 主题 深色 暗色 夜间', function () { var t = document.getElementById('theme'), d = root.getAttribute('data-theme'), m = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches, want = (d ? d === 'dark' : m) ? 'light' : 'dark'; for (var k = 0; t && k < 3 && root.getAttribute('data-theme') !== want; k++) t.click(); }],
     ['act', 'globe', 'Switch to 中文', 'Switch to English', 'Change the language', '切换语言', 'language chinese english 语言 中文 英文', function () { var l = document.getElementById('lang'); if (l) l.click(); }],
     ['sec', 'grid', 'Features', '功能', 'Everything in one panel', '一个面板，全部搞定', 'deadlines grades 功能 作业', go('features')],
+    ['sec', 'grid', 'Themes', '风格主题', '23 original looks for Canvas', '23 套原创 Canvas 主题', 'themes skins look style wallpaper 主题 皮肤 风格 壁纸 背景', go('themes')],
     ['sec', 'spark', 'Canvas+ AI', 'Canvas+ AI', 'Guides, syllabus, Q&A, review packs', '作业拆解、大纲、问答、复习包', 'ai assistant gpt 人工智能 问答', go('ai')],
     ['sec', 'mac', 'Canvas+ for Mac', 'Mac 版', 'Widgets and the menu bar', '桌面小组件和菜单栏', 'mac widget 小组件', go('mac')],
     ['sec', 'scale', 'Compare', '对比', 'Canvas+ vs. AI study sites and chatbots', 'Canvas+ 和 AI 学习网站、聊天机器人对比', 'vs comparison 比较', go('compare')],
