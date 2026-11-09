@@ -12,55 +12,139 @@
 <meta property="og:image" content="https://getcanvasplus.com/icon128.png">
 <link rel="icon" href="../icon128.png">
 <style>
-  :root { --bg: #f6f7f9; --card: #ffffff; --fg: #1b1f24; --muted: #5f6b76; --line: #e3e6ea; --primary: #bb0000; --soft: rgba(187,0,0,.08); --good: #1b7f3b; --good-bg: #e6f4ea; }
-  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #000; --card: #141418; --fg: #e8eaed; --muted: #a0a8b3; --line: #33383f; --primary: #ff6b6b; --soft: rgba(255,107,107,.14); --good: #81c995; --good-bg: #1d3325; } }
-  :root[data-theme="dark"] { --bg: #000; --card: #141418; --fg: #e8eaed; --muted: #a0a8b3; --line: #33383f; --primary: #ff6b6b; --soft: rgba(255,107,107,.14); --good: #81c995; --good-bg: #1d3325; }
+  :root { color-scheme: light;
+    --bg: #f5f5f7; --card: #ffffff; --fg: #111216; --muted: #5d6170; --dim: #8a8d99; --line: #e7e7ec; --tile: #f6f6f8;
+    --red: #e01e2b; --red-tx: #c3121d; --red-soft: #fdecee; --ok: #17a34a; --ok-soft: #e8f6ee; --gold: #ffb020;
+    --shadow: 0 1px 2px rgba(17,18,22,.04), 0 24px 60px -28px rgba(17,18,22,.28); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { color-scheme: dark;
+    --bg: #000; --card: #121216; --fg: #f3f3f6; --muted: #a3a5b1; --dim: #6c6d78; --line: #26262d; --tile: #1a1a20;
+    --red: #ff3b47; --red-tx: #ff7a82; --red-soft: rgba(255,59,71,.13); --ok: #3ddc84; --ok-soft: rgba(61,220,132,.12);
+    --shadow: 0 0 0 1px #202027, 0 30px 70px -30px rgba(0,0,0,.9); } }
+  :root[data-theme="dark"] { color-scheme: dark;
+    --bg: #000; --card: #121216; --fg: #f3f3f6; --muted: #a3a5b1; --dim: #6c6d78; --line: #26262d; --tile: #1a1a20;
+    --red: #ff3b47; --red-tx: #ff7a82; --red-soft: rgba(255,59,71,.13); --ok: #3ddc84; --ok-soft: rgba(61,220,132,.12);
+    --shadow: 0 0 0 1px #202027, 0 30px 70px -30px rgba(0,0,0,.9); }
   * { box-sizing: border-box; }
   [hidden] { display: none !important; }
-  body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--fg); display: flex; flex-direction: column; align-items: center;
-    font: 15px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif; }
-  header { width: 100%; max-width: 560px; padding: 22px 16px 0; display: flex; align-items: center; gap: 10px; }
-  header img { width: 34px; height: 34px; border-radius: 8px; }
-  header a { color: inherit; text-decoration: none; font-weight: 700; font-size: 17px; }
-  main { width: 100%; max-width: 560px; padding: 18px 16px 48px; }
-  .card { background: var(--card); border-radius: 22px; padding: 26px 22px 24px; box-shadow: 0 0 0 1px var(--line), 0 18px 50px -24px rgba(0,0,0,.35); }
-  .gift { width: 64px; height: 64px; border-radius: 20px; display: grid; place-items: center; background: linear-gradient(135deg, var(--primary), #ffb703); color: #fff; margin-bottom: 14px; }
-  .gift svg { width: 34px; height: 34px; }
-  h1 { margin: 0; font-size: 26px; line-height: 1.25; }
-  .lead { color: var(--muted); margin: 8px 0 0; }
-  .perks { list-style: none; padding: 0; margin: 18px 0 0; display: grid; gap: 8px; }
-  .perks li { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; }
-  .perks li::before { content: ""; flex: none; width: 18px; height: 18px; margin-top: 2px; border-radius: 50%; background: var(--good-bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231b7f3b' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4 8-9'/%3E%3C/svg%3E") center / 12px no-repeat; }
-  .steps { margin: 20px 0 0; padding: 0; list-style: none; counter-reset: s; display: grid; gap: 10px; }
-  .steps li { counter-increment: s; display: flex; gap: 12px; align-items: center; padding: 12px 14px; border-radius: 14px; background: var(--soft); font-size: 14px; }
-  .steps li::before { content: counter(s); flex: none; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: var(--primary); color: #fff; font-weight: 700; font-size: 13px; }
-  .steps li.done { background: var(--good-bg); }
-  .steps li.done::before { content: "✓"; background: var(--good); }
-  .btns { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
-  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 46px; padding: 0 22px; border: 0; border-radius: 999px;
-    background: var(--primary); color: #fff; font: inherit; font-weight: 700; font-size: 15px; cursor: pointer; text-decoration: none; }
-  .btn.ghost { background: transparent; color: var(--primary); box-shadow: inset 0 0 0 1.5px var(--primary); }
-  .msg { margin: 16px 0 0; padding: 12px 14px; border-radius: 12px; background: var(--soft); font-size: 14px; }
-  .msg.ok { background: var(--good-bg); }
+  html { background: var(--bg); }
+  body { margin: 0; min-height: 100vh; color: var(--fg); display: flex; flex-direction: column; align-items: center; -webkit-font-smoothing: antialiased;
+    font: 15px/1.6 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: radial-gradient(900px 420px at 50% -120px, color-mix(in srgb, var(--red) 16%, transparent), transparent 70%), var(--bg); }
+  header { width: 100%; max-width: 520px; padding: 24px 16px 0; display: flex; align-items: center; justify-content: center; gap: 9px; }
+  header img { width: 28px; height: 28px; border-radius: 7px; }
+  header a { color: inherit; text-decoration: none; font-weight: 700; font-size: 16px; letter-spacing: -.01em; }
+  main { width: 100%; max-width: 520px; padding: 18px 16px 40px; }
+  .card { background: var(--card); border-radius: 28px; overflow: hidden; box-shadow: var(--shadow); }
+
+  /* ---- top: who invited you + the reward ---- */
+  .hero { position: relative; padding: 30px 26px 26px; text-align: center; color: #fff; overflow: hidden;
+    background: radial-gradient(120% 90% at 85% 0%, #ff8a3d 0%, transparent 55%), radial-gradient(100% 90% at 0% 100%, #a3001b 0%, transparent 60%), linear-gradient(150deg, #f0303c, #c70f22); }
+  .hero::before { content: ""; position: absolute; inset: 0; opacity: .14; pointer-events: none;
+    background: radial-gradient(circle at 12% 22%, #fff 0 2px, transparent 3px), radial-gradient(circle at 88% 30%, #fff 0 1.5px, transparent 2.5px), radial-gradient(circle at 70% 80%, #fff 0 2px, transparent 3px), radial-gradient(circle at 25% 75%, #fff 0 1.5px, transparent 2.5px), radial-gradient(circle at 50% 12%, #fff 0 1px, transparent 2px); }
+  .duo { position: relative; display: inline-flex; align-items: center; margin-bottom: 18px; }
+  .av { width: 58px; height: 58px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 23px; letter-spacing: -.02em;
+    background: rgba(255,255,255,.18); box-shadow: inset 0 0 0 2px rgba(255,255,255,.55); backdrop-filter: blur(6px); }
+  .av svg { width: 26px; height: 26px; }
+  :lang(en) .av.you { font-size: 16px; }
+  .av.you { background: #fff; color: var(--red); box-shadow: 0 8px 20px -8px rgba(0,0,0,.35); }
+  .link { width: 40px; height: 2px; background: repeating-linear-gradient(90deg, rgba(255,255,255,.8) 0 5px, transparent 5px 9px); }
+  .gift { position: absolute; left: 50%; top: 50%; width: 34px; height: 34px; margin: -17px 0 0 -17px; border-radius: 50%; display: grid; place-items: center;
+    background: var(--gold); color: #6b3a00; box-shadow: 0 0 0 4px #e5212f, 0 6px 14px -4px rgba(0,0,0,.4); }
+  .gift svg { width: 18px; height: 18px; }
+  h1 { position: relative; margin: 0; font-size: 25px; line-height: 1.25; letter-spacing: -.02em; font-weight: 800; }
+  .lead { position: relative; margin: 8px auto 0; max-width: 400px; font-size: 14px; color: rgba(255,255,255,.86); }
+  .ticket { position: relative; margin: 20px auto 0; max-width: 340px; display: flex; align-items: stretch; border-radius: 16px; color: var(--fg); background: var(--card);
+    box-shadow: 0 14px 30px -14px rgba(60,0,8,.55); text-align: left; }
+  .t-big { flex: none; width: 96px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 6px; border-right: 1.5px dashed var(--line); }
+  .t-big b { font-size: 30px; line-height: 1; font-weight: 800; color: var(--red-tx); letter-spacing: -.03em; }
+  .t-big span { margin-top: 4px; font-size: 12px; font-weight: 700; color: var(--red-tx); }
+  .t-tx { flex: 1; min-width: 0; padding: 12px 16px; display: flex; flex-direction: column; justify-content: center; }
+  .t-tx b { font-size: 15px; letter-spacing: -.01em; }
+  .t-tx span { font-size: 12.5px; color: var(--muted); line-height: 1.45; margin-top: 1px; }
+
+  /* ---- steps ---- */
+  .body { padding: 24px 24px 22px; }
+  .msg { display: flex; gap: 10px; align-items: flex-start; margin: 0 0 18px; padding: 12px 14px; border-radius: 14px; background: var(--tile); font-size: 13.5px; line-height: 1.5; }
+  .msg::before { content: ""; flex: none; width: 20px; height: 20px; margin-top: 1px; border-radius: 50%; background: var(--dim) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M12 7.5v.5M12 11v6'/%3E%3C/svg%3E") center / 14px no-repeat; }
+  .msg.ok { background: var(--ok-soft); }
+  .msg.ok::before { background: var(--ok) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4 8-9'/%3E%3C/svg%3E") center / 13px no-repeat; }
+  .msg.warn { background: var(--red-soft); }
+  .msg.warn::before { background-color: var(--red); }
   .msg:empty { display: none; }
-  .msg b { display: block; margin-bottom: 2px; }
-  .fine { color: var(--muted); font-size: 12.5px; margin: 16px 0 0; }
-  .foot { text-align: center; color: var(--muted); font-size: 13px; margin-top: 18px; }
-  .foot a { color: var(--primary); }
+  .msg b { display: block; font-size: 14px; }
+  .msg span { color: var(--muted); }
+  .sec { margin: 0 0 12px; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); }
+  .steps { margin: 0; padding: 0; list-style: none; }
+  .steps li { position: relative; display: flex; gap: 14px; padding: 0 0 18px; }
+  .steps li:last-child { padding-bottom: 0; }
+  .steps li::after { content: ""; position: absolute; left: 13px; top: 30px; bottom: 2px; width: 2px; border-radius: 2px; background: var(--line); }
+  .steps li:last-child::after { display: none; }
+  .dot { flex: none; position: relative; z-index: 1; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-size: 13px; font-weight: 800;
+    background: var(--tile); color: var(--dim); box-shadow: inset 0 0 0 1.5px var(--line); }
+  .dot i { font-style: normal; }
+  .dot svg { width: 14px; height: 14px; display: none; }
+  .st { padding-top: 3px; min-width: 0; }
+  .st b { display: block; font-size: 14.5px; font-weight: 650; line-height: 1.4; color: var(--muted); }
+  .st span { display: block; margin-top: 2px; font-size: 13px; color: var(--dim); line-height: 1.5; }
+  .steps li.now .dot { background: var(--red); color: #fff; box-shadow: 0 0 0 5px var(--red-soft); }
+  .steps li.now .st b { color: var(--fg); }
+  .steps li.now .st span { color: var(--muted); }
+  .steps li.done .dot { background: var(--ok); color: #fff; box-shadow: none; }
+  .steps li.done .dot i { display: none; } .steps li.done .dot svg { display: block; }
+  .steps li.done .st b { color: var(--fg); }
+  .steps li.done::after { background: var(--ok); }
+  .btns { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+  .btn { flex: 1 1 auto; display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 48px; padding: 0 22px; border: 0; border-radius: 14px;
+    background: var(--red); color: #fff; font: inherit; font-weight: 700; font-size: 15px; cursor: pointer; text-decoration: none;
+    box-shadow: 0 10px 22px -12px color-mix(in srgb, var(--red) 90%, transparent); transition: transform .15s, filter .15s; }
+  .btns:not(:has(> :not([hidden]))) { display: none; }
+  .btn:hover { filter: brightness(1.06); transform: translateY(-1px); }
+  .btn svg { width: 18px; height: 18px; }
+  .btn.ghost { background: var(--tile); color: var(--fg); box-shadow: inset 0 0 0 1px var(--line); }
+
+  /* ---- what you get ---- */
+  .perks-wrap { margin-top: 26px; padding-top: 22px; border-top: 1px solid var(--line); }
+  .perks { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .perks li { padding: 13px 14px; border-radius: 16px; background: var(--tile); }
+  .pi { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; margin-bottom: 8px; color: #fff; }
+  .pi svg { width: 17px; height: 17px; }
+  .perks div b { display: block; font-size: 13.5px; line-height: 1.35; }
+  .perks div span { display: block; margin-top: 2px; font-size: 12px; line-height: 1.45; color: var(--muted); }
+  .fine { display: flex; gap: 8px; color: var(--dim); font-size: 12px; line-height: 1.55; margin: 18px 0 0; }
+  .fine svg { flex: none; width: 14px; height: 14px; margin-top: 2px; }
+  .foot { text-align: center; color: var(--dim); font-size: 12.5px; margin-top: 20px; }
+  .foot a { color: var(--muted); text-decoration: none; }
+  .foot a:hover { color: var(--red-tx); }
+  @media (max-width: 420px) {
+    .hero { padding: 26px 18px 22px; } h1 { font-size: 22px; } .body { padding: 20px 18px 18px; }
+    .perks { grid-template-columns: 1fr; } .perks li { display: flex; gap: 12px; align-items: flex-start; } .pi { margin: 0; flex: none; }
+  }
 </style>
 </head>
 <body>
 <header><img src="../icon128.png" alt=""><a href="../" id="home">Canvas+</a></header>
 <main>
   <div class="card">
-    <div class="gift" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="8.5" width="17" height="4" rx="1"/><path d="M5 12.5V20h14v-7.5"/><path d="M12 8.5V20"/><path d="M12 8.5C10 4 6.5 4.5 7 7c.3 1.4 2.6 1.5 5 1.5zM12 8.5c2-4.5 5.5-4 5-1.5-.3 1.4-2.6 1.5-5 1.5z"/></svg></div>
-    <h1 id="title"></h1>
-    <p class="lead" id="lead"></p>
-    <ul class="perks" id="perks"></ul>
-    <ol class="steps" id="steps"></ol>
-    <div class="btns"><a class="btn" id="install" target="_blank" rel="noopener"></a><button class="btn ghost" id="copy" type="button" hidden></button></div>
-    <div class="msg" id="msg" role="status"></div>
-    <p class="fine" id="fine"></p>
+    <div class="hero">
+      <div class="duo" aria-hidden="true">
+        <span class="av" id="avA"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 19.5c1.2-3.3 3.8-5 7-5s5.8 1.7 7 5"/></svg></span>
+        <span class="link"></span>
+        <span class="gift"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="8.5" width="17" height="4" rx="1"/><path d="M5 12.5V20h14v-7.5"/><path d="M12 8.5V20"/><path d="M12 8.5C10 4 6.5 4.5 7 7c.3 1.4 2.6 1.5 5 1.5zM12 8.5c2-4.5 5.5-4 5-1.5-.3 1.4-2.6 1.5-5 1.5z"/></svg></span>
+        <span class="link"></span>
+        <span class="av you" id="avB"></span>
+      </div>
+      <h1 id="title"></h1>
+      <p class="lead" id="lead"></p>
+      <div class="ticket"><div class="t-big"><b>1</b><span id="tUnit"></span></div><div class="t-tx"><b id="tName"></b><span id="tSub"></span></div></div>
+    </div>
+    <div class="body">
+      <div class="msg" id="msg" role="status"></div>
+      <p class="sec" id="secSteps"></p>
+      <ol class="steps" id="steps"></ol>
+      <div class="btns"><a class="btn" id="install" target="_blank" rel="noopener"></a><button class="btn ghost" id="copy" type="button" hidden></button></div>
+      <div class="perks-wrap"><p class="sec" id="secPerks"></p><ul class="perks" id="perks"></ul></div>
+      <p class="fine"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7.5 3v5.5c0 4.5-3.2 8-7.5 9.5-4.3-1.5-7.5-5-7.5-9.5V6z"/></svg><span id="fine"></span></p>
+    </div>
   </div>
   <p class="foot" id="foot"></p>
 </main>
@@ -75,49 +159,66 @@
   var zh = (q.get('lang') || saved || (/^zh/i.test(navigator.language || '') ? 'zh' : 'en')) === 'zh';
   var T = zh ? {
     doc: '同学邀请你使用 Canvas+', titleBy: '@{nick} 邀请你使用 Canvas+', title: '你的同学邀请你使用 Canvas+',
-    lead: '免费的 Canvas 插件。通过这个链接注册，你和邀请你的同学都能获得 1 个月 Pro 会员。',
-    perks: ['所有作业的截止时间一眼看全，到点提醒', '期末要考多少分、GPA 一键算', 'AI 帮你总结作业、写邮件、做复习题', '几十套主题，把 Canvas 换成你喜欢的样子'],
-    steps: ['在电脑上的 Chrome 安装 Canvas+', '打开你学校的 Canvas，在 Canvas+ 里注册并登录（免费）', '1 个月 Pro 自动到账，你们俩都有'],
+    lead: '免费的 Canvas 插件。用这个链接注册，你们俩都能领 Pro 会员。',
+    you: '你', unit: '个月', tName: 'Canvas+ AI Pro', tSubBy: '你和 @{nick} 各得一份', tSub: '你和邀请你的同学各得一份',
+    secSteps: '三步领取', secPerks: 'Canvas+ 能帮你',
+    perks: [['截止时间一眼看全', '所有课的作业排好队，到点提醒'], ['成绩随手算', '期末要考多少分、GPA 一键算'], ['AI 学习助手', '总结作业、写邮件、出复习题'], ['几十套主题', '把 Canvas 换成你喜欢的样子']],
+    steps: [['安装 Canvas+', '在电脑上的 Chrome 或 Edge 里安装，免费'], ['注册并登录', '打开你学校的 Canvas，在 Canvas+ 里用邮箱注册'], ['Pro 自动到账', '1 个月 Pro，你们俩都有，不用填任何码']],
     install: '安装 Canvas+（免费）', copy: '复制链接', copied: '链接已复制',
-    got: '<b>已记下这次邀请</b>现在打开你学校的 Canvas，在 Canvas+ 里注册登录，奖励会自动到账。',
-    phone: '<b>请在电脑上打开这个链接</b>Canvas+ 是电脑版 Chrome / Edge 的插件。把链接发到电脑上打开，再按下面的步骤做。',
-    bad: '<b>这个邀请链接无效</b>不过 Canvas+ 本身是免费的，照样可以安装使用。',
+    got: '<div><b>已记下这次邀请</b><span>现在打开你学校的 Canvas，在 Canvas+ 里注册登录，奖励会自动到账。</span></div>',
+    phone: '<div><b>请在电脑上打开这个链接</b><span>Canvas+ 是电脑版 Chrome / Edge 的插件。复制链接发到电脑上，再按下面的步骤做。</span></div>',
+    bad: '<div><b>这个邀请链接无效</b><span>不过 Canvas+ 本身是免费的，照样可以安装使用。</span></div>',
     fine: '奖励只给从没注册过 Canvas+ 的新账号，并且这台电脑之前没登录过别的 Canvas+ 账号。',
     foot: '<a href="../zh/">了解 Canvas+</a> · <a href="../privacy-zh.html">隐私政策</a>'
   } : {
     doc: 'You’re invited to Canvas+', titleBy: '@{nick} invited you to Canvas+', title: 'A friend invited you to Canvas+',
-    lead: 'The free extension for Canvas. Sign up through this link and you and your friend both get 1 month of Pro.',
-    perks: ['Every deadline in one list, with reminders', 'What you need on the final, and your GPA, in a click', 'AI that summarizes assignments, drafts e-mails and makes practice questions', 'Dozens of themes to make Canvas yours'],
-    steps: ['Install Canvas+ in Chrome on your computer', 'Open your school’s Canvas and sign up in Canvas+ (free)', 'The month of Pro arrives by itself — for both of you'],
+    lead: 'The free extension for Canvas. Sign up through this link and you both get Pro.',
+    you: 'You', unit: 'month', tName: 'Canvas+ AI Pro', tSubBy: 'One for you, one for @{nick}', tSub: 'One for you, one for your friend',
+    secSteps: 'Three steps', secPerks: 'What Canvas+ does',
+    perks: [['Every deadline, one list', 'All your courses lined up, with reminders'], ['Grades in a click', 'What you need on the final, and your GPA'], ['AI study help', 'Summaries, e-mails and practice questions'], ['Dozens of themes', 'Make Canvas look the way you like']],
+    steps: [['Install Canvas+', 'In Chrome or Edge on your computer — it’s free'], ['Sign up', 'Open your school’s Canvas and sign up in Canvas+ with your email'], ['Pro arrives by itself', 'A month of Pro for both of you — no code to type']],
     install: 'Get Canvas+ (free)', copy: 'Copy link', copied: 'Link copied',
-    got: '<b>Invite saved</b>Now open your school’s Canvas and sign up in Canvas+ — the reward arrives by itself.',
-    phone: '<b>Open this link on a computer</b>Canvas+ is an extension for desktop Chrome / Edge. Open the link on your computer and follow the steps below.',
-    bad: '<b>This invite link isn’t valid</b>Canvas+ itself is free, so you can still install it.',
+    got: '<div><b>Invite saved</b><span>Now open your school’s Canvas and sign up in Canvas+ — the reward arrives by itself.</span></div>',
+    phone: '<div><b>Open this link on a computer</b><span>Canvas+ is an extension for desktop Chrome / Edge. Send the link to your computer and follow the steps below.</span></div>',
+    bad: '<div><b>This invite link isn’t valid</b><span>Canvas+ itself is free, so you can still install it.</span></div>',
     fine: 'The reward is for new Canvas+ accounts only, on a computer that has never been signed in to another Canvas+ account.',
     foot: '<a href="../">About Canvas+</a> · <a href="../privacy.html">Privacy</a>'
   };
+  var ICONS = [
+    '<rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4M8.5 14.5l2 2 4-4"/>',
+    '<rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8.5 7.5h7M9 12h.01M12 12h.01M15 12h.01M9 16h.01M12 16h.01M15 16h.01"/>',
+    '<path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8zM18 15l.8 2.2L21 18l-2.2.8L18 21l-.8-2.2L15 18l2.2-.8z"/>',
+    '<path d="M12 3a9 9 0 1 0 0 18c1.2 0 1.8-.8 1.8-1.7 0-1.2-1-1.5-1-2.6 0-1 .8-1.7 1.9-1.7H17a4 4 0 0 0 4-4C21 6.5 17 3 12 3z"/><circle cx="7.5" cy="11" r="1.2"/><circle cx="10" cy="7" r="1.2"/><circle cx="15" cy="7" r="1.2"/>'];
+  var TINTS = ['#e01e2b', '#2563eb', '#7c3aed', '#f59e0b'];
+  var svg = function (p, w) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="' + (w || 2) + '" stroke-linecap="round" stroke-linejoin="round">' + p + '</svg>'; };
   var $ = function (i) { return document.getElementById(i); };
   var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
   document.documentElement.lang = zh ? 'zh-CN' : 'en'; document.title = T.doc;
   $('title').textContent = T.title; $('lead').textContent = T.lead; $('fine').textContent = T.fine; $('foot').innerHTML = T.foot;
   $('home').href = zh ? '../zh/' : '../';
-  $('perks').innerHTML = T.perks.map(function (p) { return '<li>' + p + '</li>'; }).join('');
-  $('steps').innerHTML = T.steps.map(function (p) { return '<li>' + p + '</li>'; }).join('');
-  $('install').textContent = T.install; $('install').href = STORE + '?utm_source=invite';
+  $('avB').textContent = T.you; $('tUnit').textContent = T.unit; $('tName').textContent = T.tName; $('tSub').textContent = T.tSub;
+  $('secSteps').textContent = T.secSteps; $('secPerks').textContent = T.secPerks;
+  $('perks').innerHTML = T.perks.map(function (p, i) { return '<li><span class="pi" style="background:' + TINTS[i] + '">' + svg(ICONS[i]) + '</span><div><b>' + p[0] + '</b><span>' + p[1] + '</span></div></li>'; }).join('');
+  $('steps').innerHTML = T.steps.map(function (p, i) { return '<li' + (i === 0 ? ' class="now"' : '') + '><span class="dot"><i>' + (i + 1) + '</i>' + svg('<path d="M6 12.5l4 4 8-9"/>', 3.2) + '</span><div class="st"><b>' + p[0] + '</b><span>' + p[1] + '</span></div></li>'; }).join('');
+  $('install').innerHTML = svg('<path d="M12 4v11M7 10.5l5 5 5-5M5 20h14"/>', 2.2) + '<span>' + T.install + '</span>'; $('install').href = STORE + '?utm_source=invite';
   $('copy').textContent = T.copy;
   $('copy').onclick = function () { if (navigator.clipboard) navigator.clipboard.writeText(location.href).then(function () { $('copy').textContent = T.copied; }); };
-  var msg = function (h, ok) { $('msg').innerHTML = h || ''; $('msg').className = 'msg' + (ok ? ' ok' : ''); };
+  var msg = function (h, kind) { $('msg').innerHTML = h || ''; $('msg').className = 'msg' + (kind ? ' ' + kind : ''); };
   var phone = /Android|iPhone|iPad|iPod|Mobile|MicroMessenger|XiaoHongShu|discover/i.test(navigator.userAgent);
-  if (!/^[A-Z0-9]{8}$/.test(code)) { msg(T.bad); return; }
+  if (!/^[A-Z0-9]{8}$/.test(code)) { msg(T.bad, 'warn'); return; }
   try { localStorage.setItem('cp-ref', code); } catch (e) {}
   // who invited (their public nickname), and count the visit once per browser
   var counted = false; try { counted = localStorage.getItem('cp-ref-seen') === code; } catch (e) {}
   fetch(API + '/v1/referral/click?c=' + code + (counted ? '&seen=1' : '')).then(function (r) { return r.ok ? r.json() : null; }).then(function (r) {
-    if (!r) return msg(T.bad);
-    if (r.nick) $('title').textContent = T.titleBy.replace('{nick}', r.nick);
+    if (!r) return msg(T.bad, 'warn');
+    if (r.nick) {
+      $('title').textContent = T.titleBy.replace('{nick}', r.nick);
+      $('tSub').textContent = T.tSubBy.replace('{nick}', r.nick);
+      $('avA').textContent = Array.from(r.nick)[0].toUpperCase();
+    }
     try { localStorage.setItem('cp-ref-seen', code); } catch (e) {}
   }, function () {});
-  if (phone) { msg(T.phone); $('copy').hidden = false; return; }
+  if (phone) { msg(T.phone); $('copy').hidden = false; $('install').hidden = true; return; }
   // Hand the code to Canvas+. Not installed yet: keep trying while the page is open (they install it in another tab
   // and come back), for up to 15 minutes.
   var tries = 0;
@@ -126,7 +227,9 @@
     try {
       chrome.runtime.sendMessage(EXT, { type: 'cp-ref', code: code }, function (res) {
         if (chrome.runtime.lastError || !res || !res.ok) return later();
-        handed = true; $('steps').children[0].className = 'done'; $('install').hidden = true; msg(T.got, true);
+        handed = true;
+        var li = $('steps').children; li[0].className = 'done'; li[1].className = 'now';
+        $('install').hidden = true; msg(T.got, 'ok');
       });
     } catch (e) { later(); }
   }
