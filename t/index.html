@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script>try{var t=localStorage.getItem("cp-theme");if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t}}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A Canvas theme for you · Canvas+</title>
+<meta name="description" content="A Canvas theme made by a student with Canvas+. Try it on your own Canvas dashboard in one click.">
+<meta name="robots" content="noindex">
+<meta property="og:title" content="A Canvas theme for you · Canvas+">
+<meta property="og:description" content="Try this theme on your own Canvas dashboard with Canvas+.">
+<meta property="og:image" content="https://getcanvasplus.com/icon128.png">
+<link rel="icon" href="../icon128.png">
+<style>
+  :root { --bg: #f6f7f9; --card: #ffffff; --fg: #1b1f24; --muted: #5f6b76; --line: #e3e6ea; --primary: #bb0000; --soft: rgba(187,0,0,.08); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #000; --card: #141418; --fg: #e8eaed; --muted: #a0a8b3; --line: #33383f; --primary: #ff6b6b; --soft: rgba(255,107,107,.14); } }
+  :root[data-theme="dark"] { --bg: #000; --card: #141418; --fg: #e8eaed; --muted: #a0a8b3; --line: #33383f; --primary: #ff6b6b; --soft: rgba(255,107,107,.14); }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--fg); display: flex; flex-direction: column; align-items: center;
+    font: 15px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif; }
+  header { width: 100%; max-width: 560px; padding: 22px 16px 0; display: flex; align-items: center; gap: 10px; }
+  header img { width: 34px; height: 34px; border-radius: 8px; }
+  header a { color: inherit; text-decoration: none; font-weight: 700; font-size: 17px; }
+  main { width: 100%; max-width: 560px; padding: 18px 16px 48px; }
+  .card { background: var(--card); border-radius: 22px; overflow: hidden; box-shadow: 0 0 0 1px var(--line), 0 18px 50px -24px rgba(0,0,0,.35); }
+  .pic { aspect-ratio: 16 / 10; background: var(--line) center / cover no-repeat; }
+  .body { padding: 18px 20px 22px; }
+  h1 { margin: 0; font-size: 24px; line-height: 1.25; }
+  .by { color: var(--muted); margin: 2px 0 0; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 0; }
+  .tags span { font-size: 12px; padding: 3px 10px; border-radius: 999px; background: var(--soft); color: var(--primary); font-weight: 600; }
+  .stats { color: var(--muted); font-size: 13px; margin: 10px 0 0; }
+  .btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; margin-top: 18px; padding: 13px 16px; border: 0; border-radius: 14px;
+    background: var(--primary); color: #fff; font: inherit; font-weight: 700; font-size: 16px; cursor: pointer; text-decoration: none; }
+  .btn:hover { filter: brightness(1.06); }
+  .btn.ghost { background: transparent; color: var(--primary); box-shadow: inset 0 0 0 1.5px var(--primary); margin-top: 10px; }
+  .msg { margin: 14px 0 0; padding: 12px 14px; border-radius: 12px; background: var(--soft); font-size: 14px; }
+  .msg:empty { display: none; }
+  .msg b { display: block; margin-bottom: 2px; }
+  .steps { margin: 16px 0 0; padding: 0 0 0 20px; color: var(--muted); font-size: 14px; }
+  .foot { text-align: center; color: var(--muted); font-size: 13px; margin-top: 18px; }
+  .foot a { color: var(--primary); }
+  .skel .pic, .skel h1, .skel .by { background: linear-gradient(90deg, var(--line), var(--bg), var(--line)); background-size: 200% 100%; animation: sk 1.2s infinite; color: transparent; border-radius: 6px; }
+  @keyframes sk { to { background-position: -200% 0; } }
+  @media (prefers-reduced-motion: reduce) { .skel * { animation: none !important; } }
+</style>
+</head>
+<body>
+<header><img src="../icon128.png" alt=""><a href="../" id="home">Canvas+</a></header>
+<main>
+  <div class="card skel" id="card">
+    <div class="pic" id="pic"></div>
+    <div class="body">
+      <h1 id="name">Loading theme…</h1>
+      <p class="by" id="by">@…</p>
+      <div class="tags" id="tags"></div>
+      <p class="stats" id="stats"></p>
+      <button class="btn" id="try" type="button" hidden></button>
+      <a class="btn ghost" id="install" hidden target="_blank" rel="noopener"></a>
+      <button class="btn ghost" id="copy" type="button" hidden></button>
+      <div class="msg" id="msg" role="status"></div>
+      <ol class="steps" id="steps" hidden></ol>
+    </div>
+  </div>
+  <p class="foot" id="foot"></p>
+</main>
+<script>
+(function () {
+  var API = 'https://ai.baowenliu.com';
+  var STORE = 'https://chromewebstore.google.com/detail/enihdeipikgagnnkpnanlhfechaflmif';
+  var q = new URLSearchParams(location.search);
+  var id = (q.get('id') || '').toLowerCase();
+  var EXT = /^[a-p]{32}$/.test(q.get('ext') || '') ? q.get('ext') : 'enihdeipikgagnnkpnanlhfechaflmif';   // ?ext= for testing a local build
+  var saved = null; try { saved = localStorage.getItem('cp-lang'); } catch (e) {}
+  var zh = (q.get('lang') || saved || (/^zh/i.test(navigator.language || '') ? 'zh' : 'en')) === 'zh';
+  var T = zh ? {
+    title: '一套 Canvas 主题送给你 · Canvas+', loading: '主题加载中…', by: '作者 @', stats: '{l} 个赞 · {u} 人用过 · {n} 张图',
+    try: '在我的 Canvas 里试穿', trying: '正在打开…', install: '安装 Canvas+（免费）', copy: '复制链接', copied: '链接已复制',
+    opened: '<b>已在 Canvas 里打开</b>去 Canvas 那个标签页看看，点「使用这个主题」就能换上。',
+    noCanvas: '<b>先打开一次你学校的 Canvas</b>在这个浏览器里登录 Canvas 后，回到这里再点一次。',
+    noExt: '<b>还没有 Canvas+？</b>先安装（免费，30 秒），装好后回到这个页面再点「试穿」。',
+    phone: '<b>请在电脑上打开</b>Canvas+ 是电脑版 Chrome / Edge 的插件。把链接发到电脑上，用浏览器打开就能一键试穿。',
+    steps: ['在电脑上安装 Canvas+', '回到这个页面，点「在我的 Canvas 里试穿」', '在主题市场里点「使用这个主题」'],
+    gone: '这个主题已经不在了', goneSub: '可能被作者或管理员移除了。去 Canvas+ 主题市场看看别的主题吧。',
+    foot: 'Canvas+ 是给 Canvas 用的免费插件：截止时间、成绩计算、AI 助手，还有主题市场。<a href="../zh/">了解更多</a>',
+    tags: { animals: '动物', cats: '猫咪', dogs: '狗狗', nature: '风景', flowers: '花', sea: '海洋', sky: '天空', city: '城市', travel: '旅行', food: '美食', cute: '可爱', cozy: '治愈', fresh: '清新', anime: '动漫风', minimal: '简约', retro: '复古', dark: '暗色', weather: '天气', seasons: '季节', study: '学习', music: '音乐', sports: '运动', other: '其他' }
+  } : {
+    title: 'A Canvas theme for you · Canvas+', loading: 'Loading theme…', by: 'by @', stats: '{l} likes · used {u} times · {n} pictures',
+    try: 'Try it on my Canvas', trying: 'Opening…', install: 'Get Canvas+ (free)', copy: 'Copy link', copied: 'Link copied',
+    opened: '<b>Opened in Canvas</b>Switch to your Canvas tab and press “Use this theme”.',
+    noCanvas: '<b>Open your school’s Canvas once</b>Sign in to Canvas in this browser, then come back and press the button again.',
+    noExt: '<b>Don’t have Canvas+ yet?</b>Install it (free, 30 seconds), then come back to this page and press “Try it”.',
+    phone: '<b>Open this on a computer</b>Canvas+ is an extension for desktop Chrome / Edge. Send this link to your computer to try the theme in one click.',
+    steps: ['Install Canvas+ on your computer', 'Come back to this page and press “Try it on my Canvas”', 'In the theme market, press “Use this theme”'],
+    gone: 'This theme isn’t available any more', goneSub: 'Its author or the moderators removed it. Have a look at other themes in the Canvas+ theme market.',
+    foot: 'Canvas+ is a free extension for Canvas: deadlines, grade calculators, an AI helper — and a theme market. <a href="../">Learn more</a>',
+    tags: {}
+  };
+  var $ = function (i) { return document.getElementById(i); };
+  document.documentElement.lang = zh ? 'zh-CN' : 'en'; document.title = T.title;
+  $('name').textContent = T.loading; $('foot').innerHTML = T.foot; $('home').href = zh ? '../zh/' : '../';
+  var phone = /Android|iPhone|iPad|iPod|Mobile|MicroMessenger|XiaoHongShu|discover/i.test(navigator.userAgent);
+  var msg = function (h) { $('msg').innerHTML = h || ''; };
+  var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  $('install').href = STORE + '?utm_source=theme_share'; $('install').textContent = T.install;
+  $('copy').textContent = T.copy;
+  $('copy').onclick = function () {
+    var done = function () { $('copy').textContent = T.copied; setTimeout(function () { $('copy').textContent = T.copy; }, 1800); };
+    if (navigator.clipboard) navigator.clipboard.writeText(location.href).then(done, function () {}); else done();
+  };
+  function gone() {
+    $('card').classList.remove('skel'); $('pic').style.display = 'none';
+    $('name').textContent = T.gone; $('by').textContent = T.goneSub; $('install').hidden = false;
+  }
+  if (!/^[a-z0-9]{12}$/.test(id)) return gone();
+  fetch(API + '/v1/themes/card?id=' + id).then(function (r) { return r.ok ? r.json() : null; }).then(function (c) {
+    if (!c || !c.name) return gone();
+    $('card').classList.remove('skel');
+    $('pic').style.backgroundImage = 'url("' + API + '/t/' + id + '.jpg")';
+    $('name').textContent = c.name;
+    $('by').textContent = T.by + (c.nick || '?');
+    $('tags').innerHTML = (c.tags || []).map(function (g) { return '<span>' + esc(T.tags[g] || g) + '</span>'; }).join('');
+    $('stats').textContent = T.stats.replace('{l}', c.likes | 0).replace('{u}', c.uses | 0).replace('{n}', c.images | 0);
+    document.title = c.name + ' · ' + T.title;
+    if (phone) { msg(T.phone); $('copy').hidden = false; $('steps').hidden = false; $('steps').innerHTML = T.steps.map(function (s) { return '<li>' + s + '</li>'; }).join(''); return; }
+    $('try').hidden = false; $('try').textContent = T.try;
+  }, gone);
+  // Ask Canvas+ (if it's installed) to open this theme in the student's Canvas. Without the extension, chrome.runtime
+  // isn't there for this page at all, or the message gets no answer.
+  $('try').onclick = function () {
+    msg(''); $('try').textContent = T.trying;
+    var answered = false;
+    var noExt = function () { if (answered) return; answered = true; $('try').textContent = T.try; msg(T.noExt); $('install').hidden = false; };
+    try {
+      if (!(window.chrome && chrome.runtime && chrome.runtime.sendMessage)) return noExt();
+      setTimeout(noExt, 2500);
+      chrome.runtime.sendMessage(EXT, { type: 'cp-open-theme', id: id }, function (res) {
+        if (chrome.runtime.lastError || !res) return noExt();
+        answered = true; $('try').textContent = T.try;
+        if (res.ok) msg(T.opened); else msg(T.noCanvas);
+      });
+    } catch (e) { noExt(); }
+  };
+})();
+</script>
+</body>
+</html>
