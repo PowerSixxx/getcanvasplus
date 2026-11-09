@@ -353,8 +353,8 @@
     return '<div class="p-sec">' + L('Look', '外观设置') + '</div><div class="p-tcs">' + tc('light', 'Light', '浅色模式') + tc('dark', 'Dark', '暗色模式') + tc('auto', 'System', '跟随系统') + '</div>' +
       '<div class="p-sec">' + L('Themes', '风格主题') + '</div><p class="p-hint">' + L('Course-card art, page background, colours and a font, all in one tap.', '一键换上课程卡片配图、页面背景、配色和字体。') + '</p>' +
       '<div class="p-skins">' + sk(null) + SKINS.slice(0, moreSkins ? 8 : 5).map(sk).join('') + '</div>' +
-      (moreSkins ? '<p class="p-hint p-hint2">' + L('…and 15 more in the extension.', '……插件里还有 15 套。') + '</p>' : '') +
-      '<button class="p-more" data-act="more">' + (moreSkins ? L('Show fewer', '收起') : L('Show all themes (+18)', '展开更多主题（+18）')) + ic(moreSkins ? 'up' : 'down') + '</button>' +
+      (moreSkins ? '<p class="p-hint p-hint2">' + L('…and 18 more in the extension.', '……插件里还有 18 套。') + '</p>' : '') +
+      '<button class="p-more" data-act="more">' + (moreSkins ? L('Show fewer', '收起') : L('Show all themes (+21)', '展开更多主题（+21）')) + ic(moreSkins ? 'up' : 'down') + '</button>' +
       '<div class="p-sec">' + L('Font', '字体') + '</div><div class="p-fonts">' + fn('', 'Theme', '跟随主题') + fn('rounded', 'Rounded', '圆体') + fn('serif', 'Serif', '衬线') + fn('hand', 'Handwritten', '手写') + fn('mono', 'Mono', '等宽') + '</div>' +
       '<div class="p-sec">' + L('Course colours', '课程配色') + '</div><div class="p-group"><div class="p-pals">' + PALS.map(function (p, k) {
         return '<button class="p-pal' + (k === pal ? ' on' : '') + '" data-act="pal" data-k="' + k + '">' + p.c.map(function (c) { return '<i style="background:' + c + '"></i>'; }).join('') + ' ' + L(p.n[0], p.n[1]) + '</button>'; }).join('') + '</div></div>' +
@@ -998,7 +998,7 @@
     ['act', 'moon', 'Switch light / dark', '切换浅色 / 深色', 'Change the look of this site', '切换网站外观', 'theme dark mode light 主题 深色 暗色 夜间', function () { var t = document.getElementById('theme'), d = root.getAttribute('data-theme'), m = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches, want = (d ? d === 'dark' : m) ? 'light' : 'dark'; for (var k = 0; t && k < 3 && root.getAttribute('data-theme') !== want; k++) t.click(); }],
     ['act', 'globe', 'Switch to 中文', 'Switch to English', 'Change the language', '切换语言', 'language chinese english 语言 中文 英文', function () { var l = document.getElementById('lang'); if (l) l.click(); }],
     ['sec', 'grid', 'Features', '功能', 'Everything in one panel', '一个面板，全部搞定', 'deadlines grades 功能 作业', go('features')],
-    ['sec', 'grid', 'Themes', '风格主题', '23 original looks for Canvas', '23 套原创 Canvas 主题', 'themes skins look style wallpaper 主题 皮肤 风格 壁纸 背景', go('themes')],
+    ['sec', 'grid', 'Themes', '风格主题', '26 original looks for Canvas', '26 套原创 Canvas 主题', 'themes skins look style wallpaper 主题 皮肤 风格 壁纸 背景', go('themes')],
     ['sec', 'spark', 'Canvas+ AI', 'Canvas+ AI', 'Guides, syllabus, Q&A, review packs', '作业拆解、大纲、问答、复习包', 'ai assistant gpt 人工智能 问答', go('ai')],
     ['sec', 'mac', 'Canvas+ for Mac', 'Mac 版', 'Widgets and the menu bar', '桌面小组件和菜单栏', 'mac widget 小组件', go('mac')],
     ['sec', 'scale', 'Compare', '对比', 'Canvas+ vs. AI study sites and chatbots', 'Canvas+ 和 AI 学习网站、聊天机器人对比', 'vs comparison 比较', go('compare')],
